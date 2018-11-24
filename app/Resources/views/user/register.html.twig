@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <form name="register" action="{{ path('user_register') }}" method="post">
+        <label>Email:
+            <input type="text" name="user[email]" />
+        </label><br />
+        <label>Password:
+            <input type="password" name="user[password]" />
+        </label><br />
+        <label>Full Name:
+            <input type="text" name="user[fullName]" />
+        </label><br /><br />
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}" />
+        <input type="submit" value="Register">
+
+    </form>
+
+{% endblock %}
