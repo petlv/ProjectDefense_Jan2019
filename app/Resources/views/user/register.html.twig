@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
+
+    {% for msg in app.session.flashBag.get('info') %}
+        <div class="alert alert-danger">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
     <form name="register" action="{{ path('user_register') }}" method="post">
         <label>Email:
             <input type="text" name="user[email]" />

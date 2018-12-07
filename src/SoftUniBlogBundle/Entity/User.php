@@ -2,6 +2,7 @@
 
 namespace SoftUniBlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,9 +40,37 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="fullName", type="string", length=255)
+     * @ORM\Column(name="full_name", type="string", length=255)
      */
     private $fullName;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Article", mappedBy="author")
+     */
+    private $articles;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="SoftUniBlogBundle\Entity\Role")
+     * @ORM\JoinTable(name="users_roles",
+     *          joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *          inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     *           )
+     */
+    private $roles;
+
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+        $this->roles = new ArrayCollection();
+    }
 
 
     /**
@@ -138,11 +167,29 @@ class User implements UserInterface
      * and populated in any number of different ways when the user object
      * is created.
      *
-     * @return (Role|string)[] The user roles
+     * @return Role[]
      */
     public function getRoles()
     {
-        return [];
+        $stringRoles = [];
+
+        foreach ($this->roles as $role) {
+            /** @var Role $role  */
+            $stringRoles[] = $role->getRole();
+        }
+
+        return $stringRoles;
+    }
+
+    /**
+     * @param Role $role
+     *
+     * @return User
+     */
+    public function addRole(Role $role)
+    {
+        $this->roles[] = $role;
+        return $this;
     }
 
     /**
@@ -176,6 +223,41 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getArticles()
+    {
+        return $this->articles;
+    }
+
+    /**
+     * @param Article $article
+     *
+     * @return User
+     */
+    public function addPost(Article $article)
+    {
+        $this->articles[] = $article;
+
+        return $this;
+    }
+
+    /**
+     * @param Article $article
+     * @return bool
+     */
+    public function isAuthor(Article $article) {
+        return $article->getAuthorId() === $this->getId();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin() {
+        return in_array('ROLE_ADMIN', $this->getRoles(), true);
     }
 }
 

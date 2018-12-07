@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    <div class="container body-content">
+        <div class="row">
+            {% for article in articles %}
+                <div class="col-md-12">
+                    <article>
+                        <header>
+                            <h2>Title: {{ article.title }}</h2>
+                        </header>
+
+                        <p>
+                            Content: {{ article.content }}
+                        </p>
+
+                        <img src="{{ article.imageUrl }}" width="400" height="200">
+
+                        <footer>
+                            <div class="pull-right">
+                                <a class="btn btn-success btn-xs" href="{{ path('article_edit', {'id' : article.id}) }}">edit &raquo;</a>
+                                <a class="btn btn-danger btn-xs" href="{{ path('article_delete', {'id' : article.id}) }}">delete &raquo;</a>
+
+                                <a class="btn btn-default btn-xs"
+                                   href="{{ path('blog_index') }}">Back &raquo;</a>
+                            </div>
+                        </footer>
+                    </article>
+                </div>
+                <hr />
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
