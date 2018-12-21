@@ -47,7 +47,7 @@ class User implements UserInterface
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Article", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Article", mappedBy="author", cascade={"remove"})
      */
     private $articles;
 
@@ -62,6 +62,13 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @var ArrayCollection|Comment[]
+     *
+     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Comment", mappedBy="author", cascade={"remove"})
+     */
+    private $comments;
+
 
     /**
      * User constructor.
@@ -70,6 +77,7 @@ class User implements UserInterface
     {
         $this->articles = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
 
@@ -258,6 +266,24 @@ class User implements UserInterface
      */
     public function isAdmin() {
         return in_array('ROLE_ADMIN', $this->getRoles(), true);
+    }
+
+    /**
+     * @return ArrayCollection|Comment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment|null $comment
+     * @return User
+     */
+    public function addComment(Comment $comment = null)
+    {
+        $this->comments[] = $comment;
+        return $this;
     }
 }
 

@@ -16,7 +16,7 @@
                         </p>
                         
                         <a href="{{ path('article_view', {'id' : article.id}) }}">
-                            <img src="{{ article.imageUrl }}" width="400" height="200" alt=""></a>
+                            <img src="{{ asset('uploads/images/' ~ article.image) }}" width="400" height="200" alt=""></a>
 
                         <small class="author">
                             {{ article.author.fullName }}

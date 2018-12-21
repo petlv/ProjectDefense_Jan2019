@@ -4,9 +4,12 @@ namespace SoftUniBlogBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use SoftUniBlogBundle\Entity\Article;
+use SoftUniBlogBundle\Entity\Comment;
 use SoftUniBlogBundle\Entity\User;
 use SoftUniBlogBundle\Form\ArticleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -18,6 +21,7 @@ class ArticleController extends Controller
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      */
     public function createAction(Request $request)
     {
@@ -26,6 +30,18 @@ class ArticleController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var UploadedFile $file */
+            $file = $form->getData()->getImage();
+            $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
+
+            try {
+                $file->move($this->getParameter('article_directory'), $fileName);
+            } catch (FileException $exception) {
+
+            }
+
+            $article->setImage($fileName);
             $currentUser = $this->getUser();
             $article->setAuthor($currentUser);
             $article->setViewCount(0);
@@ -51,12 +67,15 @@ class ArticleController extends Controller
             ->getRepository(Article::class)
             ->find($id);
 
+        $comments = $this->getDoctrine()->getRepository(Comment::class)
+            ->findBy(['article' => $article], ['dateAdded' => 'desc']);
+
         $article->setViewCount($article->getViewCount() + 1);
         $em = $this->getDoctrine()->getManager();
         $em->persist($article);
         $em->flush();
 
-        return $this->render('article/article.html.twig', ['article' => $article]);
+        return $this->render('article/article.html.twig', ['article' => $article, 'comments' => $comments]);
 
     }
 
@@ -92,6 +111,18 @@ class ArticleController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var UploadedFile $file */
+            $file = $form->getData()->getImage();
+            $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
+
+            try {
+                $file->move($this->getParameter('article_directory'), $fileName);
+            } catch (FileException $exception) {
+
+            }
+
+            $article->setImage($fileName);
             $currentUser = $this->getUser();
             $article->setAuthor($currentUser);
 
@@ -161,5 +192,15 @@ class ArticleController extends Controller
 
         return $this->render('article/myArticles.html.twig',
             ['articles' => $articles]);
+    }
+
+    /**
+     * @Route("/article/like/{id}", name="article_likes")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @param $id
+     */
+    public function likes($id) {
+
+        return $this->redirectToRoute('blog_index');
     }
 }

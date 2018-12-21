@@ -14,11 +14,23 @@
                         {{ article.content }}
                     </p>
 
-                    <img src="{{ article.imageUrl }}" width="400" height="200">
+                    <img src="{{asset('uploads/images/' ~ article.image) }}" width="400" height="200" alt="">
 
                     <small class="author">
                         {{ article.author.fullName }}
                     </small>
+
+                    <a href="{{ path('article_likes', {'id': article.id}) }}"><i class="far fa-thumbs-up"></i></a>
+
+                    <button id="btnComment" class="btn btn-info btn-xs">Add</button>
+                    <div id="form"></div>
+
+                    {% for comment in comments %}
+                        <p>{{ comment.content }}</p>
+                        <small>{{ comment.dateAdded|date("F js \\a\\t g:ia", 'Europe/Sofia') }}</small>
+                        <small>{{ comment.author.fullName }}</small>
+                        <hr />
+                    {% endfor %}
 
                     <footer>
                         <div class="pull-right">
@@ -34,6 +46,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        let selectForm = $('#form');
+        let form = $(`
+            <form method="post" action="{{ path('add_comment', {'id': article.id}) }}" >
+                <div class="form-group">
+                    <!--<label class="col-sm-4 control-label" for="comment_content">Content</label>-->
+                    <div class="col-sm-6">
+                        <textarea class="form-control" rows="6" id="comment_content"
+                                  name="comment[content]"></textarea>
+                        <input class="btn btn-success btn-xs" type="submit" value="Create" />
+                    </div>
+                </div>
+            </form>
+            `);
+
+        $('#btnComment').click(function (e) {
+            e.preventDefault();
+            selectForm.append(form);
+            selectForm.toggle();
+        })
+
+    </script>
 
 {% endblock %}
 

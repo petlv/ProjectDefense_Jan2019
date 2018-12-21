@@ -15,7 +15,7 @@
                             Content: {{ article.content }}
                         </p>
 
-                        <img src="{{ article.imageUrl }}" width="400" height="200">
+                        <img src="{{ asset('uploads/images/' ~ article.image) }}" width="400" height="200">
 
                         <footer>
                             <div class="pull-right">

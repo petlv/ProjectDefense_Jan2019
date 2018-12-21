@@ -26,12 +26,12 @@ class UserController extends Controller
 
             $emailForm = $form->getData()->getEmail();
 
-            $user = $this
+            $userForm = $this
                 ->getDoctrine()
                 ->getRepository(User::class)
-                ->findBy(['email' => $emailForm]);
+                ->findOneBy(['email' => $emailForm]);
 
-            if (null !== $user) {
+            if (null !== $userForm) {
                 $this->addFlash('info', "Username with email " . $emailForm . " is already taken!");
                 return $this->render('user/register.html.twig');
             }
@@ -54,7 +54,7 @@ class UserController extends Controller
         }
 
 
-        return $this->render('user/register.html.twig');
+        return $this->render('user/register.html.twig', ['form' => $form->createView()]);
     }
 
     /**
