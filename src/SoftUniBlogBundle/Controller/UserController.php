@@ -2,6 +2,7 @@
 
 namespace SoftUniBlogBundle\Controller;
 
+use SoftUniBlogBundle\Entity\Message;
 use SoftUniBlogBundle\Entity\Role;
 use SoftUniBlogBundle\Entity\User;
 use SoftUniBlogBundle\Form\UserType;
@@ -33,12 +34,13 @@ class UserController extends Controller
 
             if (null !== $userForm) {
                 $this->addFlash('info', "Username with email " . $emailForm . " is already taken!");
-                return $this->render('user/register.html.twig');
+                return $this->render('user/register.html.twig', ['form' => $form->createView()]);
             }
 
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
 
+            /** @var Role $role */
             $role = $this
                 ->getDoctrine()
                 ->getRepository(Role::class)
@@ -67,6 +69,13 @@ class UserController extends Controller
             ->getRepository(User::class)
             ->find($userId);
 
-        return $this->render("user/profile.html.twig", ['user' => $user]);
+        $unreadMessages = $this
+            ->getDoctrine()
+            ->getRepository(Message::class)
+            ->findBy(['recipient' => $user, 'isReaded' => false]);
+
+        $countMsg = count($unreadMessages);
+
+        return $this->render("user/profile.html.twig", ['user' => $user, 'countMsg' => $countMsg]);
     }
 }

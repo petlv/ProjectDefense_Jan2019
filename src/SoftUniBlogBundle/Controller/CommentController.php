@@ -2,6 +2,7 @@
 
 namespace SoftUniBlogBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use SoftUniBlogBundle\Entity\Article;
 use SoftUniBlogBundle\Entity\Comment;
 use SoftUniBlogBundle\Entity\User;
@@ -14,6 +15,7 @@ class CommentController extends Controller
 {
     /**
      * @Route("/article/{id}/comment", name="add_comment")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param Request $request
      * @param Article $article
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

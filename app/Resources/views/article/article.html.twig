@@ -2,6 +2,13 @@
 
 {% block main %}
 
+    {% for msg in app.session.flashbag.get('message') %}
+        <div id="msg" class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+            {{ msg }}
+        </div>
+    {% endfor %}
+
     <div class="container body-content">
         <div class="row">
             <div class="col-md-12">
@@ -27,8 +34,9 @@
 
                     {% for comment in comments %}
                         <p>{{ comment.content }}</p>
-                        <small>{{ comment.dateAdded|date("F js \\a\\t g:ia", 'Europe/Sofia') }}</small>
-                        <small>{{ comment.author.fullName }}</small>
+                        <small>{{ comment.dateAdded|date("F jS \\a\\t g:ia", "Europe/Sofia") }}</small>
+                        <a href="{{ path('user_message', {'id': comment.author.id, 'articleId': article.id}) }}">
+                            <small>{{ comment.author.fullName }}</small></a>
                         <hr />
                     {% endfor %}
 

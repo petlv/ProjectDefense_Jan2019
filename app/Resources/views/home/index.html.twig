@@ -4,7 +4,7 @@
 
     <div class="container body-content">
         <div class="row">
-            {% for article in articles %}
+            {% for article in pagination %}
                 <div class="col-md-6">
                     <article>
                         <header>
@@ -35,6 +35,11 @@
                 </div>
             {% endfor %}
         </div>
+    </div>
+
+    {# display navigation #}
+    <div class="navigation text-center">
+        {{ knp_pagination_render(pagination) }}
     </div>
 
 {% endblock %}

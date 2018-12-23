@@ -69,6 +69,20 @@ class User implements UserInterface
      */
     private $comments;
 
+    /**
+     * @var ArrayCollection|Message[]
+     *
+     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Message", mappedBy="sender")
+     */
+    private $send_messages;
+
+    /**
+     * @var ArrayCollection|Message[]
+     *
+     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Message", mappedBy="recipient")
+     */
+    private $receive_messages;
+
 
     /**
      * User constructor.
@@ -78,6 +92,8 @@ class User implements UserInterface
         $this->articles = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->send_messages = new ArrayCollection();
+        $this->receive_messages = new ArrayCollection();
     }
 
 
@@ -285,5 +301,39 @@ class User implements UserInterface
         $this->comments[] = $comment;
         return $this;
     }
+
+    /**
+     * @return ArrayCollection|Message[]
+     */
+    public function getSendMessages()
+    {
+        return $this->send_messages;
+    }
+
+    /**
+     * @param ArrayCollection|Message[] $send_messages
+     */
+    public function setSendMessages($send_messages)
+    {
+        $this->send_messages = $send_messages;
+    }
+
+    /**
+     * @return ArrayCollection|Message[]
+     */
+    public function getReceiveMessages()
+    {
+        return $this->receive_messages;
+    }
+
+    /**
+     * @param ArrayCollection|Message[] $receive_messages
+     */
+    public function setReceiveMessages($receive_messages)
+    {
+        $this->receive_messages = $receive_messages;
+    }
+
+
 }
 

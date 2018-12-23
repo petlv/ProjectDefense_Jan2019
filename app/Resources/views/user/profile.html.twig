@@ -4,4 +4,6 @@
 
     <h1>Hello, {{ user.fullName }}</h1>
 
+    <a href="{{ path('user_mailbox') }}"><span class="fas fa-envelope fa-2x">({{ countMsg }})</span></a>
+
 {% endblock %}
