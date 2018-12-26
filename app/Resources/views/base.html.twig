@@ -12,8 +12,16 @@
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('amcharts4/ammap.css') }}">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-        <script src="{{ asset('./js/jquery-3.3.1.min.js') }}"></script>
+    {% endblock %}
+
+    {% block javascripts %}
+        <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ asset('js/moment.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.js') }}"></script>
+        <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+
         <script>
             setTimeout(function () {
                 $('#msg').fadeOut();
@@ -21,6 +29,7 @@
 
         </script>
     {% endblock %}
+
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 </head>
 
@@ -51,13 +60,13 @@
                                 </li>
                             {% endif %}
                             <li>
-                                <a href="{{ path('my_articles') }}">
-                                    My Articles
+                                <a href="{{ path('my_accommodations') }}">
+                                    My Accommodations
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ path('article_create') }}">
-                                    Create Article
+                                <a href="{{ path('accommodation_create') }}">
+                                    Create Accommodation
                                 </a>
                             </li>
                             <li>
@@ -108,12 +117,6 @@
             <p>&copy; 2016 - Software University Foundation</p>
         </div>
     </footer>
-{% endblock %}
-
-{% block javascripts %}
-    <script src="{{ asset('./js/moment.min.js') }}"></script>
-    <script src="{{ asset('./js/bootstrap.js') }}"></script>
-    <script src="{{ asset('./js/bootstrap-datetimepicker.min.js') }}"></script>
 {% endblock %}
 
 </body>

@@ -2,7 +2,7 @@
 
 namespace SoftUniBlogBundle\Controller;
 
-use SoftUniBlogBundle\Entity\Article;
+use SoftUniBlogBundle\Entity\Accommodation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +20,7 @@ class HomeController extends Controller
     {
         $articles = $this
             ->getDoctrine()
-            ->getRepository(Article::class)
+            ->getRepository(Accommodation::class)
             ->findBy([], ['dateAdded' => 'desc', 'viewCount' => 'desc']);
 
         $paginator  = $this->get('knp_paginator');

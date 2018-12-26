@@ -79,7 +79,7 @@ class MessageController extends Controller
     }
 
     /**
-     * @Route("/user/mailbox/message/{id}", name="user_current_message")
+     * @Route("/mailbox/message/{id}", name="user_current_message")
      * @param Request $request
      * @param $id
      * @return \Symfony\Component\HttpFoundation\Response

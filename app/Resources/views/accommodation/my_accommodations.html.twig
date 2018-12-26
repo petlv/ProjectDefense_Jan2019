@@ -4,23 +4,26 @@
 
     <div class="container body-content">
         <div class="row">
-            {% for article in articles %}
+            {% for accommodation in accommodations %}
                 <div class="col-md-12">
                     <article>
                         <header>
-                            <h2>Title: {{ article.title }}</h2>
+                            <h2>Name: {{ accommodation.name }}</h2>
                         </header>
 
                         <p>
-                            Content: {{ article.content }}
+                            Description: {{ accommodation.description }}
                         </p>
 
-                        <img src="{{ asset('uploads/images/' ~ article.image) }}" width="400" height="200">
+                        <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
+                             width="400" height="200">
 
                         <footer>
                             <div class="pull-right">
-                                <a class="btn btn-success btn-xs" href="{{ path('article_edit', {'id' : article.id}) }}">edit &raquo;</a>
-                                <a class="btn btn-danger btn-xs" href="{{ path('article_delete', {'id' : article.id}) }}">delete &raquo;</a>
+                                <a class="btn btn-success btn-xs" href="{{ path('accommodation_edit',
+                                    {'id' : accommodation.id}) }}">edit &raquo;</a>
+                                <a class="btn btn-danger btn-xs" href="{{ path('accommodation_delete',
+                                    {'id' : accommodation.id}) }}">delete &raquo;</a>
 
                                 <a class="btn btn-default btn-xs"
                                    href="{{ path('blog_index') }}">Back &raquo;</a>

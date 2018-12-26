@@ -4,6 +4,7 @@ namespace SoftUniBlogBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -25,6 +26,7 @@ class User implements UserInterface
 
     /**
      * @var string
+     * @Assert\NotNull
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      */
@@ -47,9 +49,9 @@ class User implements UserInterface
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Article", mappedBy="author", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Accommodation", mappedBy="owner", cascade={"remove"})
      */
-    private $articles;
+    private $accommodations;
 
     /**
      * @var ArrayCollection
@@ -252,29 +254,28 @@ class User implements UserInterface
     /**
      * @return ArrayCollection
      */
-    public function getArticles()
+    public function getAccommodation()
     {
-        return $this->articles;
+        return $this->accommodations;
     }
 
     /**
-     * @param Article $article
-     *
+     * @param Accommodation $accommodation
      * @return User
      */
-    public function addPost(Article $article)
+    public function addPost(Accommodation $accommodation)
     {
-        $this->articles[] = $article;
+        $this->accommodations[] = $accommodation;
 
         return $this;
     }
 
     /**
-     * @param Article $article
+     * @param Accommodation $accommodation
      * @return bool
      */
-    public function isAuthor(Article $article) {
-        return $article->getAuthorId() === $this->getId();
+    public function isOwner(Accommodation $accommodation) {
+        return $accommodation->getOwnerId() === $this->getId();
     }
 
     /**

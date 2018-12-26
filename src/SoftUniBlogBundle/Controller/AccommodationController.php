@@ -3,20 +3,20 @@
 namespace SoftUniBlogBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use SoftUniBlogBundle\Entity\Article;
+use SoftUniBlogBundle\Entity\Accommodation;
 use SoftUniBlogBundle\Entity\Comment;
 use SoftUniBlogBundle\Entity\User;
-use SoftUniBlogBundle\Form\ArticleType;
+use SoftUniBlogBundle\Form\AccommodationType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ArticleController extends Controller
+class AccommodationController extends Controller
 {
     /**
-     * @Route("/article/create", name="article_create")
+     * @Route("/accommodation/create", name="accommodation_create")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param Request $request
@@ -25,8 +25,8 @@ class ArticleController extends Controller
      */
     public function createAction(Request $request)
     {
-        $article = new Article();
-        $form = $this->createForm(ArticleType::class, $article);
+        $accommodation = new Accommodation();
+        $form = $this->createForm(AccommodationType::class, $accommodation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -36,51 +36,51 @@ class ArticleController extends Controller
             $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
 
             try {
-                $file->move($this->getParameter('article_directory'), $fileName);
+                $file->move($this->getParameter('accommodation_directory'), $fileName);
             } catch (FileException $exception) {
 
             }
 
-            $article->setImage($fileName);
+            $accommodation->setImage($fileName);
             $currentUser = $this->getUser();
-            $article->setAuthor($currentUser);
-            $article->setViewCount(0);
+            $accommodation->setOwner($currentUser);
+            $accommodation->setViewCount(0);
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($article);
+            $em->persist($accommodation);
             $em->flush();
 
             return $this->redirectToRoute('blog_index');
         }
 
-        return $this->render('article/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('accommodation/create.html.twig', ['form' => $form->createView()]);
     }
 
     /**
-     * @Route("/article/{id}", name="article_view")
+     * @Route("/accommodation/{id}", name="accommodation_view")
      * @param $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewArticle($id) {
-        $article = $this
+    public function viewAccommodation($id) {
+        $accommodation = $this
             ->getDoctrine()
-            ->getRepository(Article::class)
+            ->getRepository(Accommodation::class)
             ->find($id);
 
         $comments = $this->getDoctrine()->getRepository(Comment::class)
-            ->findBy(['article' => $article], ['dateAdded' => 'desc']);
+            ->findBy(['accommodation' => $accommodation], ['dateAdded' => 'desc']);
 
-        $article->setViewCount($article->getViewCount() + 1);
+        $accommodation->setViewCount($accommodation->getViewCount() + 1);
         $em = $this->getDoctrine()->getManager();
-        $em->persist($article);
+        $em->persist($accommodation);
         $em->flush();
 
-        return $this->render('article/article.html.twig', ['article' => $article, 'comments' => $comments]);
+        return $this->render('accommodation/accommodation.html.twig', ['accommodation' => $accommodation, 'comments' => $comments]);
 
     }
 
     /**
-     * @Route("/article/edit/{id}", name="article_edit")
+     * @Route("/accommodation/edit/{id}", name="accommodation_edit")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param Request $request
@@ -89,12 +89,13 @@ class ArticleController extends Controller
      */
     public function editAction(Request $request, $id)
     {
-        $article = $this
+        /** @var Accommodation $accommodation */
+        $accommodation = $this
             ->getDoctrine()
-            ->getRepository(Article::class)
+            ->getRepository(Accommodation::class)
             ->find($id);
 
-        if ($article === null) {
+        if ($accommodation === null) {
             return $this->redirectToRoute('blog_index');
         }
 
@@ -103,11 +104,11 @@ class ArticleController extends Controller
          */
         $currentUser = $this->getUser();
 
-        if (!$currentUser->isAuthor($article) && !$currentUser->isAdmin()) {
+        if (!$currentUser->isOwner($accommodation) && !$currentUser->isAdmin()) {
             return $this->redirectToRoute('blog_index');
         }
 
-        $form = $this->createForm(ArticleType::class, $article);
+        $form = $this->createForm(AccommodationType::class, $accommodation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -117,28 +118,28 @@ class ArticleController extends Controller
             $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
 
             try {
-                $file->move($this->getParameter('article_directory'), $fileName);
+                $file->move($this->getParameter('accommodation_directory'), $fileName);
             } catch (FileException $exception) {
 
             }
 
-            $article->setImage($fileName);
+            $accommodation->setImage($fileName);
             $currentUser = $this->getUser();
-            $article->setAuthor($currentUser);
+            $accommodation->setOwner($currentUser);
 
             $em = $this->getDoctrine()->getManager();
-            $em->merge($article);
+            $em->merge($accommodation);
             $em->flush();
 
             return $this->redirectToRoute('blog_index');
         }
 
-        return $this->render('article/edit.html.twig', ['form' => $form->createView(),
-            'article' => $article]);
+        return $this->render('accommodation/edit.html.twig', ['form' => $form->createView(),
+            'accommodation' => $accommodation]);
     }
 
     /**
-     * @Route("/article/delete/{id}", name="article_delete")
+     * @Route("/accommodation/delete/{id}", name="accommodation_delete")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param Request $request
@@ -147,9 +148,10 @@ class ArticleController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $article = $this->getDoctrine()->getRepository(Article::class)->find($id);
+        /** @var Accommodation $accommodation */
+        $accommodation = $this->getDoctrine()->getRepository(Accommodation::class)->find($id);
 
-        if ($article === null) {
+        if ($accommodation === null) {
             return $this->redirectToRoute('blog_index');
         }
 
@@ -158,46 +160,47 @@ class ArticleController extends Controller
          */
         $currentUser = $this->getUser();
 
-        if (!$currentUser->isAuthor($article) && !$currentUser->isAdmin()) {
+        if (!$currentUser->isOwner($accommodation) && !$currentUser->isAdmin()) {
             return $this->redirectToRoute('blog_index');
         }
 
-        $form = $this->createForm(ArticleType::class, $article);
+        $form = $this->createForm(AccommodationType::class, $accommodation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $currentUser = $this->getUser();
-            $article->setAuthor($currentUser);
+            $accommodation->setOwner($currentUser);
 
             $em = $this->getDoctrine()->getManager();
-            $em->remove($article);
+            $em->remove($accommodation);
             $em->flush();
 
             return $this->redirectToRoute('blog_index');
         }
 
-        return $this->render('article/delete.html.twig', ['form' => $form->createView(),
-            'article' => $article]);
+        return $this->render('accommodation/delete.html.twig', ['form' => $form->createView(),
+            'accommodation' => $accommodation]);
     }
 
     /**
-     * @Route("/myArticles", name="my_articles")
+     * @Route("/my-accommodations", name="my_accommodations")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function myArticles() {
-        $articles = $this
+        $accommodations = $this
             ->getDoctrine()
-            ->getRepository(Article::class)
-            ->findBy(['author' => $this->getUser()]);
+            ->getRepository(Accommodation::class)
+            ->findBy(['owner' => $this->getUser()]);
 
-        return $this->render('article/myArticles.html.twig',
-            ['articles' => $articles]);
+        return $this->render('accommodation/my_accommodations.html.twig',
+            ['accommodations' => $accommodations]);
     }
 
     /**
-     * @Route("/article/like/{id}", name="article_likes")
+     * @Route("/accommodation/like/{id}", name="accommodation_likes")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function likes($id) {
 

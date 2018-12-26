@@ -3,43 +3,58 @@
 {% block body %}
 
     <div class="container body-content">
+
         <div class="row">
-            {% for article in pagination %}
+            <div id="chartdiv"></div>
+        </div>
+
+        <div class="row">
+            {% for accommodation in pagination %}
                 <div class="col-md-6">
                     <article>
                         <header>
-                            <h2>{{ article.title }}</h2>
+                            <h2>{{ accommodation.name }}</h2>
                         </header>
 
                         <p>
-                            {{ article.summary }}
+                            {{ accommodation.summary }}
                         </p>
                         
-                        <a href="{{ path('article_view', {'id' : article.id}) }}">
-                            <img src="{{ asset('uploads/images/' ~ article.image) }}" width="400" height="200" alt=""></a>
+                        <a href="{{ path('accommodation_view', {'id' : accommodation.id}) }}">
+                            <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
+                                 width="400" height="200" alt=""></a>
 
                         <small class="author">
-                            {{ article.author.fullName }}
+                            {{ accommodation.owner.fullName }}
                         </small>
 
-                        Views: {{ article.viewCount }} <br />
+                        Views: {{ accommodation.viewCount }} <br />
                         Likes: 1
 
                         <footer>
                             <div class="pull-right">
                                 <a class="btn btn-default btn-xs"
-                                   href="{{ path('article_view', {'id': article.id}) }}">Read more &raquo;</a>
+                                   href="{{ path('accommodation_view', {'id': accommodation.id}) }}">Read more &raquo;</a>
                             </div>
                         </footer>
                     </article>
                 </div>
             {% endfor %}
         </div>
+
+        {# display navigation #}
+        <div class="navigation text-center">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+
     </div>
 
-    {# display navigation #}
-    <div class="navigation text-center">
-        {{ knp_pagination_render(pagination) }}
-    </div>
+    {% block javascripts %}
+        <script src="{{ asset('amcharts4/core.js') }}"></script>
+        <script src="{{ asset('amcharts4/maps.js') }}"></script>
+        <script src="{{ asset('amcharts4/themes/animated.js') }}"></script>
+        <script src="{{ asset('amcharts4/geodata/bulgariaHigh.js') }}"></script>
+        <script src="{{ asset('amcharts4/index_ammap.js') }}"></script>
+    {% endblock %}
 
 {% endblock %}

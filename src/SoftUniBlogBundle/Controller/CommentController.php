@@ -3,7 +3,7 @@
 namespace SoftUniBlogBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use SoftUniBlogBundle\Entity\Article;
+use SoftUniBlogBundle\Entity\Accommodation;
 use SoftUniBlogBundle\Entity\Comment;
 use SoftUniBlogBundle\Entity\User;
 use SoftUniBlogBundle\Form\CommentType;
@@ -14,14 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class CommentController extends Controller
 {
     /**
-     * @Route("/article/{id}/comment", name="add_comment")
+     * @Route("/accommodation/{id}/comment", name="add_comment")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param Request $request
-     * @param Article $article
+     * @param Accommodation $article
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
      */
-    public function addComment(Request $request, Article $article)
+    public function addComment(Request $request, Accommodation $article)
     {
         $user = $this->getUser();
 
