@@ -85,6 +85,17 @@ class User implements UserInterface
      */
     private $receive_messages;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="SoftUniBlogBundle\Entity\Accommodation")
+     * @ORM\JoinTable(name="users_likes",
+     *          joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *          inverseJoinColumns={@ORM\JoinColumn(name="accommodation_id", referencedColumnName="id")}
+     *           )
+     */
+    private $given_likes;
+
 
     /**
      * User constructor.
