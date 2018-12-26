@@ -2,9 +2,31 @@
 
 {% block main %}
 
+    <div class="container">
+        <div class="row">
+            <div class="card col m-3">
+                <div class="card-body">
+                    <h4 class="card-title">Special title treatment</h4>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                </div>
+            </div>
+            <div class="card col m-3">
+                <div class="card-body">
+                    <h4 class="card-title">Special title treatment</h4>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     {% for user in allUsers %}
         <p><a href="{{ path('admin_user_profile', {'id': user.id}) }}"> {{ user.email }} </a> </p>
         <hr />
     {% endfor %}
+
+
+    </div>
 
 {% endblock %}
