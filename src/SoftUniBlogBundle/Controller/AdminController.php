@@ -3,7 +3,7 @@
 namespace SoftUniBlogBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use SoftUniBlogBundle\Entity\City;
 use SoftUniBlogBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -27,7 +27,11 @@ class AdminController extends Controller
             ->getRepository(User::class)
             ->findAll();
 
-        return $this->render('admin/index.html.twig', ['allUsers' => $allUsers]);
+        $cities = $this->getDoctrine()
+            ->getRepository(City::class)
+            ->findAll();;
+
+        return $this->render('admin/index.html.twig', ['allUsers' => $allUsers, 'allCities' => $cities] );
     }
 
     /**
@@ -41,7 +45,7 @@ class AdminController extends Controller
             ->getRepository(User::class)
             ->find($id);
 
-        return $this->render('admin/user_profile.html.twig', ['user' => $user]);
+        return $this->render('admin/user/user_profile.html.twig', ['user' => $user]);
     }
 
     /**
@@ -55,6 +59,6 @@ class AdminController extends Controller
             ->getRepository(City::class)
             ->find($id);
 
-        return $this->render('admin/ci', ['city' => $city]);
+        return $this->render('admin/city/show.html.twig', ['city' => $city]);
     }
 }

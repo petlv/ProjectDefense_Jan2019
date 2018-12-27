@@ -1,32 +1,60 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-
-    <div class="container">
-        <div class="row">
             <div class="card col m-3">
                 <div class="card-body">
-                    <h4 class="card-title">Special title treatment</h4>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <h5 class="card-title">List users</h5>
+                    <div class="card-text">
+                        {% for user in allUsers %}
+                            <p><a href="{{ path('admin_user_profile', {'id': user.id}) }}"> {{ user.email }} </a> </p>
+                            <hr />
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="card col m-3">
                 <div class="card-body">
-                    <h4 class="card-title">Special title treatment</h4>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <h5 class="card-title">List cities</h5>
+                    <div class="card-text">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for city in allCities %}
+                                <tr>
+                                    <td><a href="{{ path('city_show', { 'id': city.id }) }}">{{ city.id }}</a></td>
+                                    <td>{{ city.name }}</td>
+                                    <td>{{ city.latitude }}</td>
+                                    <td>{{ city.longitude }}</td>
+                                    <td>
+                                        <ul>
+                                            <li>
+                                                <a href="{{ path('city_show', { 'id': city.id }) }}">show</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ path('city_edit', { 'id': city.id }) }}">edit</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <ul>
+                            <li>
+                                <a href="{{ path('city_new') }}">Create a new city</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-
-
-    {% for user in allUsers %}
-        <p><a href="{{ path('admin_user_profile', {'id': user.id}) }}"> {{ user.email }} </a> </p>
-        <hr />
-    {% endfor %}
-
-
-    </div>
 
 {% endblock %}

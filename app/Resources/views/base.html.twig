@@ -72,12 +72,12 @@
     </header>
 {% endblock %}
 
-<div class="container body-container">
+<div class="container">
     {% block body %}
-        <div class="row">
-            <div id="main">
-                {% block main %}{% endblock %}
-            </div>
+        <div class="row" id="main">
+                {% block main %}
+
+                {% endblock %}
         </div>
     {% endblock %}
 </div>
@@ -85,7 +85,7 @@
 {% block footer %}
     <footer>
         <div class="container modal-footer">
-            <p>&copy; 2016 - Software University Foundation</p>
+            <p>&copy; 2018 - Petar Ivanov</p>
         </div>
     </footer>
 {% endblock %}
