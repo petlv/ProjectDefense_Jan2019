@@ -1,13 +1,14 @@
 [{
-  "latitude": 48.856614,
-  "longitude": 2.352222,
-  "title": "Paris"
+  "latitude": 42.697708,
+  "longitude": 23.321867,
+  "title": "София",
+  "url": "https://www.google.bg/"
+  }, {
+  "latitude": 42.135406,
+  "longitude": 24.745291,
+  "title": "Пловдив"
 }, {
-  "latitude": 40.712775,
-  "longitude": -74.005973,
-  "title": "New York"
-}, {
-  "latitude": 49.282729,
-  "longitude": -123.120738,
-  "title": "Vancouver"
+  "latitude": 42.497681,
+  "longitude": 27.470030,
+  "title": "Бургас"
 }]
