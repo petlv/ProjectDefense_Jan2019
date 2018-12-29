@@ -69,6 +69,8 @@ circle.tooltipText = "{title}";
 // Set property fields
 imageSeriesTemplate.propertyFields.latitude = "latitude";
 imageSeriesTemplate.propertyFields.longitude = "longitude";
+imageSeriesTemplate.propertyFields.title = "title";
+imageSeriesTemplate.propertyFields.ur = "url";
 
 // Add data for the three cities
 /*imageSeries.data = [
@@ -87,9 +89,11 @@ imageSeriesTemplate.propertyFields.longitude = "longitude";
 			"title": "Бургас"
 		}];*/
 
-imageSeries.dataSource = "towns-test.json";
-
 imageSeries.mapImages.template.propertyFields.latitude = "latitude";
 imageSeries.mapImages.template.propertyFields.longitude = "longitude";
 imageSeries.mapImages.template.propertyFields.title = "title";
 imageSeries.mapImages.template.propertyFields.url = "url";
+
+imageSeries.dataSource = "towns-test.json";
+
+

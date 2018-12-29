@@ -33,3 +33,13 @@ services:
     # SoftUniBlogBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    app.message_service:
+        public: true
+        class: SoftUniBlogBundle\Service\MessageService
+        arguments: [ '@doctrine.orm.entity_manager', '@Symfony\Component\Security\Core\Security' ]
+
+    app.user_service:
+        public: true
+        class: SoftUniBlogBundle\Service\UserService
+        arguments: [ '@doctrine.orm.entity_manager' ]

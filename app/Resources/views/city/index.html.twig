@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Cities list</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for city in allCities %}
+            <tr>
+                <td><a href="{{ path('city_show', { 'id': city.id }) }}">{{ city.id }}</a></td>
+                <td>{{ city.name }}</td>
+                <td>{{ city.latitude }}</td>
+                <td>{{ city.longitude }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('city_show', { 'id': city.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('city_edit', { 'id': city.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('city_new') }}">Create a new city</a>
+        </li>
+    </ul>
+{% endblock %}

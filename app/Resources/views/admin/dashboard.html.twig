@@ -5,10 +5,41 @@
                 <div class="card-body">
                     <h5 class="card-title">List users</h5>
                     <div class="card-text">
-                        {% for user in allUsers %}
-                            <p><a href="{{ path('admin_user_profile', {'id': user.id}) }}"> {{ user.email }} </a> </p>
-                            <hr />
-                        {% endfor %}
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Email</th>
+                                <th>Full Name</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in allUsers %}
+                                <tr>
+                                    <td><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.fullName }}</td>
+                                    <td>
+                                        <ul>
+                                            <li>
+                                                <a href="{{ path('user_show', { 'id': user.id }) }}">show</a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ path('user_edit', { 'id': user.id }) }}">edit</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <ul>
+                            <li>
+                                <a href="{{ path('user_register') }}">Create a new user</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

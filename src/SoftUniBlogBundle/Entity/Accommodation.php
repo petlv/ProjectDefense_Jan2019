@@ -79,7 +79,7 @@ class Accommodation
     /**
      * @var ArrayCollection|Comment[]
      *
-     *@ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Comment", mappedBy="article", cascade={"remove"})
+     *@ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Comment", mappedBy="accommodation", cascade={"remove"})
      */
     private $comments;
 

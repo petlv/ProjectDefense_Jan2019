@@ -209,7 +209,5 @@ class Message
         $this->isReaded = $isReaded;
         return $this;
     }
-    
-    
 }
 

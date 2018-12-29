@@ -2,10 +2,15 @@
 
 namespace SoftUniBlogBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use SoftUniBlogBundle\Entity\Accommodation;
+use SoftUniBlogBundle\Entity\Message;
+use SoftUniBlogBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Test\Fixture\Entity\Article;
 
 class HomeController extends Controller
 {
@@ -18,18 +23,48 @@ class HomeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $articles = $this
+        /** @var Accommodation $accommodations */
+        $accommodations = $this
             ->getDoctrine()
             ->getRepository(Accommodation::class)
             ->findBy([], ['dateAdded' => 'desc', 'viewCount' => 'desc']);
 
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $articles, /* query NOT result */
+            $accommodations, /* query NOT result */
             $request->query->getInt('page', 1)/*page number*/,
             self::PAGINATION_LIMIT/*limit per page*/
         );
 
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $userId = $this->getUser()->getId();
+
+            /** @var User $user */
+            $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
+            /** @var int $countMsg */
+            $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+            return $this->render('home/index.html.twig', ['pagination' => $pagination, 'user' => $currentUser,
+                'countMsg' => $countMsg]);
+        }
+
         return $this->render('home/index.html.twig', ['pagination' => $pagination]);
+    }
+
+    /**
+     * Only for testing purposes!
+     *
+     * @Route("/test", name="test_action")
+     */
+    public function testAction() {
+
+        $userId = $this->getUser()->getId();
+
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages($userId);
+
+        return new Response(
+            'Lucky number: '.$countMsg
+        );
+
     }
 }

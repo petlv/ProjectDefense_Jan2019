@@ -1,14 +1,14 @@
 [{
   "latitude": 42.697708,
   "longitude": 23.321867,
-  "title": "София",
+  "title": "Sofia",
   "url": "https://www.google.bg/"
   }, {
   "latitude": 42.135406,
   "longitude": 24.745291,
-  "title": "Пловдив"
+  "title": "Plovdiv"
 }, {
   "latitude": 42.497681,
   "longitude": 27.470030,
-  "title": "Бургас"
+  "title": "Burgas"
 }]

@@ -30,9 +30,12 @@
         </script>
         <script>
             $(document).ready(function () {
-                $(".navbar-nav .nav-link").on("click", function(){
-                    $(".navbar-nav").find(".active").removeClass("active");
+                let menuLinks = $(".navbar-nav .nav-link");
+
+                menuLinks.on("click", function(){
+                    menuLinks.find(".active").removeClass("active");
                     $(this).addClass("active");
+                    console.log("test");
                 });
             });
         </script>
@@ -59,8 +62,8 @@
                         {% endif %}
                         <a class="nav-item nav-link" href="{{ path('my_accommodations') }}">My Accommodations</a>
                         <a class="nav-item nav-link" href="{{ path('accommodation_create') }}">Create Accommodation</a>
-                        {#<a class="nav-item nav-link" href="{{ path('user_mailbox') }}"><span class="fas fa-envelope fa-2x">({{ countMsg }})</span></a>#}
-                        <a class="nav-item nav-link active" href="{{ path('user_profile') }}">My Profile</a>
+                        <a class="nav-item nav-link" href="{{ path('user_show', { 'id': user.id }) }}">My Profile
+                            <span class="fas fa-envelope fa-1x">({{ countMsg }})</span></a>
                         <a class="nav-item nav-link" href="{{ path('security_logout') }}">Logout</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{{ path('user_register') }}">REGISTER</a>

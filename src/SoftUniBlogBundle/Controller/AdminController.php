@@ -23,15 +23,17 @@ class AdminController extends Controller
      */
     public function indexAction()
     {
+        /** @var User $allUsers */
         $allUsers = $this->getDoctrine()
             ->getRepository(User::class)
             ->findAll();
 
-        $cities = $this->getDoctrine()
+        /** @var City $cities */
+        $allCities = $this->getDoctrine()
             ->getRepository(City::class)
             ->findAll();;
 
-        return $this->render('admin/index.html.twig', ['allUsers' => $allUsers, 'allCities' => $cities] );
+        return $this->render('admin/dashboard.html.twig', ['allUsers' => $allUsers, 'allCities' => $allCities] );
     }
 
     /**
@@ -45,7 +47,7 @@ class AdminController extends Controller
             ->getRepository(User::class)
             ->find($id);
 
-        return $this->render('admin/user/user_profile.html.twig', ['user' => $user]);
+        return $this->render('user/show.html.twig', ['user' => $user]);
     }
 
     /**
@@ -59,6 +61,6 @@ class AdminController extends Controller
             ->getRepository(City::class)
             ->find($id);
 
-        return $this->render('admin/city/show.html.twig', ['city' => $city]);
+        return $this->render('city/show.html.twig', ['city' => $city]);
     }
 }
