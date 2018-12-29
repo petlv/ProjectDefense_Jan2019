@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h3 class="h3">Hello, {{ user.fullName }}</h3>
+
+    <h4 class="h4"><a href="{{ path('user_mailbox') }}">
+            <span class="fas fa-envelope fa-1x"> Messages: ({{ countMsg }})</span></a></h4>
+
+    <h1>User</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ user.password }}</td>
+            </tr>
+            <tr>
+                <th>Fullname</th>
+                <td>{{ user.fullName }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="m-3 text-right">
+        <button class="btn btn-outline-warning btn-sm">
+            <a href="{{ path('blog_index') }}">Back to the list</a>
+        </button>
+        <button class="btn btn-outline-warning btn-sm">
+            <a href="{{ path('user_edit', { 'id': user.id }) }}">Edit</a>
+        </button>
+        <button class="btn btn-sm">
+            {{ form_start(delete_form) }}
+            <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </button>
+    </div>
+
+
+{% endblock %}

@@ -2,8 +2,8 @@
 
 namespace SoftUniBlogBundle\Form;
 
-use Symfony\Component\DependencyInjection\Compiler\RepeatedPass;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,7 +18,7 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', TextType::class)
+            ->add('email', EmailType::class)
             ->add('password', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
@@ -27,9 +27,7 @@ class UserType extends AbstractType
                 'second_options' => array('label' => 'Repeat Password'),
             ))
             ->add('fullName', TextType::class);
-    }
-
-    /**
+    }/**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -38,6 +36,14 @@ class UserType extends AbstractType
             'data_class' => 'SoftUniBlogBundle\Entity\User'
         ));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    /*public function getBlockPrefix()
+    {
+        return 'softuniblogbundle_user';
+    }*/
 
 
 }
