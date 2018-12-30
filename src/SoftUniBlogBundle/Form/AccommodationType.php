@@ -3,6 +3,7 @@
 namespace SoftUniBlogBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +20,8 @@ class AccommodationType extends AbstractType
             ->add('name', TextType::class)
             ->add('description', TextType::class)
             ->add('image', FileType::class,
-                ['data' => null]);
+                ['data' => null])
+            ->add('cityName', TextType::class);
     }/**
      * {@inheritdoc}
      */
@@ -29,6 +31,14 @@ class AccommodationType extends AbstractType
             'data_class' => 'SoftUniBlogBundle\Entity\Accommodation'
         ));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    /*public function getBlockPrefix()
+    {
+        return 'softuniblogbundle_accommodation';
+    }*/
 
 
 }

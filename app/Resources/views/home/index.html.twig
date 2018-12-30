@@ -20,7 +20,7 @@
                             {{ accommodation.summary }}
                         </p>
                         
-                        <a href="{{ path('accommodation_view', {'id' : accommodation.id}) }}">
+                        <a href="{{ path('accommodation_show', {'id' : accommodation.id}) }}">
                             <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
                                  width="400" height="200" alt=""></a>
 
@@ -34,7 +34,7 @@
                         <footer>
                             <div class="pull-right">
                                 <a class="btn btn-default btn-xs"
-                                   href="{{ path('accommodation_view', {'id': accommodation.id}) }}">Read more &raquo;</a>
+                                   href="{{ path('accommodation_show', {'id': accommodation.id}) }}">Read more &raquo;</a>
                             </div>
                         </footer>
                     </article>

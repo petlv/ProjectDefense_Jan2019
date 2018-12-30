@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Accommodation</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ accommodation.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ accommodation.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ accommodation.description }}</td>
+            </tr>
+            <tr>
+                <th>Dateadded</th>
+                <td>{% if accommodation.dateAdded %}{{ accommodation.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Ownerid</th>
+                <td>{{ accommodation.ownerId }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ accommodation.image }}</td>
+            </tr>
+            <tr>
+                <th>Viewcount</th>
+                <td>{{ accommodation.viewCount }}</td>
+            </tr>
+            <tr>
+                <th>Likesnumber</th>
+                <td>{{ accommodation.likesNumber }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('my_accommodations') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('accommodation_edit', { 'id': accommodation.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

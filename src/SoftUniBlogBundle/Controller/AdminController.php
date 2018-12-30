@@ -31,9 +31,17 @@ class AdminController extends Controller
         /** @var City $cities */
         $allCities = $this->getDoctrine()
             ->getRepository(City::class)
-            ->findAll();;
+            ->findAll();
 
-        return $this->render('admin/dashboard.html.twig', ['allUsers' => $allUsers, 'allCities' => $allCities] );
+        $userId = $this->getUser()->getId();
+        /** @var User $user */
+        $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+        return $this->render('admin/dashboard.html.twig', ['allUsers' => $allUsers, 'allCities' => $allCities,
+            'user' => $currentUser,
+                'countMsg' => $countMsg] );
     }
 
     /**

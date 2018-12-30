@@ -49,6 +49,7 @@ class User implements UserInterface
     /**
      * @var string
      *
+     * @Assert\NotNull
      * @ORM\Column(name="user_type", type="string", length=255)
      */
     private $userType;

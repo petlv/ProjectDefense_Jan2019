@@ -4,6 +4,7 @@ namespace SoftUniBlogBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Accommodation
@@ -103,6 +104,14 @@ class Accommodation
      */
     private $city;
 
+    /**
+     * @var string
+     *
+     * @Assert\NotNull
+     *@ORM\Column(name="city_name", type="string", length=255)
+     */
+    private $cityName;
+
 
     /**
      * Accommodation constructor.
@@ -112,6 +121,8 @@ class Accommodation
     {
         $this->dateAdded = new \DateTime('now');
         $this->comments = new ArrayCollection();
+        $this->viewCount = 0;
+        $this->likesNumber = 0;
     }
 
 
@@ -262,10 +273,12 @@ class Accommodation
 
     /**
      * @param string $image
+     * @return Accommodation
      */
     public function setImage($image)
     {
         $this->image = $image;
+        return $this;
     }
 
     /**
@@ -277,11 +290,12 @@ class Accommodation
     }
 
     /**
-     * @param int $viewCount
+     * @return Accommodation
      */
-    public function setViewCount($viewCount)
+    public function addViewCount()
     {
-        $this->viewCount = $viewCount;
+        ++$this->viewCount;
+        return $this;
     }
 
     /**
@@ -310,11 +324,14 @@ class Accommodation
         return $this->likesNumber;
     }
 
+
     /**
+     * @return $this
      */
     public function addLike()
     {
         ++$this->likesNumber;
+        return $this;
     }
 
     /**
@@ -334,5 +351,39 @@ class Accommodation
         $this->city = $city;
         return $this;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLikesUsers()
+    {
+        return $this->likesUsers;
+    }
+
+    /**
+     * @param ArrayCollection $likesUsers
+     */
+    public function setLikesUsers($likesUsers)
+    {
+        $this->likesUsers = $likesUsers;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCityName()
+    {
+        return $this->cityName;
+    }
+
+    /**
+     * @param string $cityName
+     */
+    public function setCityName($cityName)
+    {
+        $this->cityName = $cityName;
+    }
+
+
 }
 

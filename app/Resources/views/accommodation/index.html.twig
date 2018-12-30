@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Accommodations list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Dateadded</th>
+                <th>Ownerid</th>
+                <th>Image</th>
+                <th>Viewcount</th>
+                <th>Likesnumber</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for accommodation in accommodations %}
+            <tr>
+                <td><a href="{{ path('accommodation_show', { 'id': accommodation.id }) }}">{{ accommodation.id }}</a></td>
+                <td>{{ accommodation.name }}</td>
+                <td>{{ accommodation.description }}</td>
+                <td>{% if accommodation.dateAdded %}{{ accommodation.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ accommodation.ownerId }}</td>
+                <td>{{ accommodation.image }}</td>
+                <td>{{ accommodation.viewCount }}</td>
+                <td>{{ accommodation.likesNumber }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('accommodation_show', { 'id': accommodation.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('accommodation_edit', { 'id': accommodation.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('accommodation_create') }}">Create a new accommodation</a>
+        </li>
+    </ul>
+{% endblock %}
