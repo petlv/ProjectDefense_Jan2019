@@ -47,11 +47,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $emailForm = $form->getData()->getEmail();
-
-            $userForm = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->findOneBy(['email' => $emailForm]);
+            $userForm = $this->container->get('app.user_service')->checkForDuplicateUser($emailForm);
 
             if (null !== $userForm) {
                 $this->addFlash('info', "Username with email " . $emailForm . " is already taken!");
@@ -66,7 +62,29 @@ class UserController extends Controller
                 ->getDoctrine()
                 ->getRepository(Role::class)
                 ->findOneBy(['name' => 'ROLE_USER']);
+
             $newUser->addRole($role);
+
+            $typeUser = $newUser->getUserType();
+            if ('type_owner' === $typeUser) {
+
+                /** @var Role $newRole */
+                $newRole = $this
+                    ->getDoctrine()
+                    ->getRepository(Role::class)
+                    ->findOneBy(['name' => 'ROLE_OWNER']);
+
+                $newUser->addRole($newRole);
+            } elseif ('type_tourist' === $typeUser) {
+
+                /** @var Role $newRole */
+                $newRole = $this
+                    ->getDoctrine()
+                    ->getRepository(Role::class)
+                    ->findOneBy(['name' => 'ROLE_TOURIST']);
+
+                $newUser->addRole($newRole);
+            }
 
             $newUser->setPassword($password);
 

@@ -42,4 +42,4 @@ services:
     app.user_service:
         public: true
         class: SoftUniBlogBundle\Service\UserService
-        arguments: [ '@doctrine.orm.entity_manager' ]
+        arguments: [ '@doctrine.orm.entity_manager', '@Doctrine\DBAL\Connection' ]

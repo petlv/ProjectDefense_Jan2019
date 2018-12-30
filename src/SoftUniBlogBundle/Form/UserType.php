@@ -3,6 +3,7 @@
 namespace SoftUniBlogBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -26,7 +27,13 @@ class UserType extends AbstractType
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
             ))
-            ->add('fullName', TextType::class);
+            ->add('fullName', TextType::class)
+            -> add('userType', ChoiceType::class, array(
+                'choices' => array(
+                    'Choose between' => array(
+                        'Owner' => 'type_owner',
+                        'Tourist' => 'type_tourist'),
+                    )));
     }/**
      * {@inheritdoc}
      */

@@ -47,6 +47,13 @@ class User implements UserInterface
     private $fullName;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="user_type", type="string", length=255)
+     */
+    private $userType;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Accommodation", mappedBy="owner", cascade={"remove"})
@@ -102,11 +109,12 @@ class User implements UserInterface
      */
     public function __construct()
     {
-        $this->articles = new ArrayCollection();
+        $this->accommodations = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->send_messages = new ArrayCollection();
         $this->receive_messages = new ArrayCollection();
+        $this->given_likes = new ArrayCollection();
     }
 
 
@@ -193,6 +201,24 @@ class User implements UserInterface
     }
 
     /**
+     * @return string
+     */
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    /**
+     * @param string $userType
+     */
+    public function setUserType($userType)
+    {
+        $this->userType = $userType;
+    }
+
+
+
+    /**
      * Returns the roles granted to the user.
      *
      *     public function getRoles()
@@ -265,16 +291,24 @@ class User implements UserInterface
     /**
      * @return ArrayCollection
      */
-    public function getAccommodation()
+    public function getAccommodations()
     {
         return $this->accommodations;
+    }
+
+    /**
+     * @param ArrayCollection $accommodations
+     */
+    public function setAccommodations($accommodations)
+    {
+        $this->accommodations = $accommodations;
     }
 
     /**
      * @param Accommodation $accommodation
      * @return User
      */
-    public function addPost(Accommodation $accommodation)
+    public function addAccommodation(Accommodation $accommodation)
     {
         $this->accommodations[] = $accommodation;
 
@@ -346,6 +380,23 @@ class User implements UserInterface
         $this->receive_messages = $receive_messages;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getGivenLikes()
+    {
+        return $this->given_likes;
+    }
+
+    /**
+     * @param Accommodation $accommodation
+     * @return User
+     */
+    public function addLike(Accommodation $accommodation)
+    {
+        $this->given_likes[] = $accommodation;
+        return $this;
+    }
 
 }
 
