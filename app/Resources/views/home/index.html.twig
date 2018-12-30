@@ -3,44 +3,49 @@
 {% block body %}
 
     <div class="container body-content">
-
-        <div class="row">
+        <section id="map">
+            <h1 class="h4 text-center m-3 text-success">Cities with accommodations</h1>
             <div id="chartdiv"></div>
-        </div>
-
-        <div class="row">
-            {% for accommodation in pagination %}
-                <div class="col-md-6">
-                    <article>
-                        <header>
-                            <h2>{{ accommodation.name }}</h2>
-                        </header>
-
-                        <p>
-                            {{ accommodation.summary }}
-                        </p>
-                        
-                        <a href="{{ path('accommodation_show', {'id' : accommodation.id}) }}">
-                            <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
-                                 width="400" height="200" alt=""></a>
-
-                        <small class="author">
-                            {{ accommodation.owner.fullName }}
-                        </small>
-
-                        Views: {{ accommodation.viewCount }} <br />
-                        Likes: 1
-
-                        <footer>
-                            <div class="pull-right">
-                                <a class="btn btn-default btn-xs"
-                                   href="{{ path('accommodation_show', {'id': accommodation.id}) }}">Read more &raquo;</a>
+        </section>
+        <section>
+            <h1 class="card-title h4 text-black-50">Newly added accommodations</h1>
+            <div class="row">
+                {% for accommodation in pagination %}
+                    <div class="card col m-3">
+                        <article class="card-body">
+                            <header>
+                                <h1 class="card-title h4">{{ accommodation.name }}</h1>
+                            </header>
+                            <div class="card-text">
+                                <p>{{ accommodation.summary }}</p>
+                                <p>
+                                    <a href="{{ path('accommodation_show', {'id' : accommodation.id}) }}">
+                                        <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
+                                             width="400" height="200" alt="Image"></a>
+                                </p>
+                                <small>
+                                    <div class="m-1">
+                                        <ul class="row list-unstyled justify-content-end">
+                                            <li class="mx-2 text-secondary">Owner: <span class="text-primary">
+                                                    {{ accommodation.owner.fullName }}</span></li>
+                                            <li class="mx-2 text-secondary">Views: <span class="text-primary">
+                                                {{ accommodation.viewCount }}</li>
+                                            <li class="mx-2 text-secondary">Likes: <span class="text-primary">
+                                                {{ accommodation.likesNumber }}</li>
+                                            <li class="mx-2">
+                                                <button class="btn btn-outline-info btn-sm">
+                                                    <a href="{{ path('accommodation_show', {'id': accommodation.id}) }}">
+                                                    Read more &raquo;</a></button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </small>
                             </div>
-                        </footer>
-                    </article>
-                </div>
-            {% endfor %}
-        </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
 
         {# display navigation #}
         <div class="navigation text-center">

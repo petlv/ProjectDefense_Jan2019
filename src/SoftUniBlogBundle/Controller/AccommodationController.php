@@ -33,16 +33,22 @@ class AccommodationController extends Controller
 
         $accommodations = $em->getRepository('SoftUniBlogBundle:Accommodation')->findAll();
 
-        $userId = $this->getUser()->getId();
-        /** @var User $user */
-        $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
-        /** @var int $countMsg */
-        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $userId = $this->getUser()->getId();
+            /** @var User $user */
+            $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
+            /** @var int $countMsg */
+            $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+            return $this->render('accommodation/index.html.twig', array(
+                'accommodations' => $accommodations,
+                'user' => $currentUser,
+                'countMsg' => $countMsg
+            ));
+        }
 
         return $this->render('accommodation/index.html.twig', array(
             'accommodations' => $accommodations,
-            'user' => $currentUser,
-            'countMsg' => $countMsg
         ));
     }
 
@@ -95,7 +101,6 @@ class AccommodationController extends Controller
         $allCities = $this->getDoctrine()->getRepository(City::class)->findAll();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
 
             /** @var UploadedFile $file */
             $file = $form->getData()->getImage();
@@ -143,23 +148,59 @@ class AccommodationController extends Controller
      *
      * @Route("/{id}", name="accommodation_show")
      * @Method("GET")
+     * @param Accommodation $accommodation
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Accommodation $accommodation)
     {
-        $userId = $this->getUser()->getId();
-        /** @var User $user */
-        $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
-        /** @var int $countMsg */
-        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+        $accommodation->addViewCount();
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($accommodation);
+        $em->flush();
 
         $deleteForm = $this->createDeleteForm($accommodation);
+
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $userId = $this->getUser()->getId();
+            /** @var User $user */
+            $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
+            /** @var int $countMsg */
+            $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+            return $this->render('accommodation/show.html.twig', array(
+                'accommodation' => $accommodation,
+                'delete_form' => $deleteForm->createView(),
+                'user' => $currentUser,
+                'countMsg' => $countMsg,
+            ));
+        }
 
         return $this->render('accommodation/show.html.twig', array(
             'accommodation' => $accommodation,
             'delete_form' => $deleteForm->createView(),
-            'user' => $currentUser,
-            'countMsg' => $countMsg,
         ));
+    }
+
+    /**
+     * @Route("/{id}/like", name="accommodation_add_like")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @param Accommodation $accommodation
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addLike(Accommodation $accommodation) {
+
+        $currentUser = $this->getUser();
+        $currentUser->addLike($accommodation);
+
+        $accommodation->addLike();
+        $id = $accommodation->getId();
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($accommodation);
+        $em->persist($currentUser);
+        $em->flush();
+
+        return $this->redirectToRoute('accommodation_show', ['id' => $id]);
     }
 
     /**

@@ -1,10 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Accommodation</h1>
 
-    <table>
-        <tbody>
+    {% for msg in app.session.flashbag.get('message') %}
+        <div id="msg" class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    <section class="article">
+        <h1>Accommodation Details</h1>
+
+        <table class="table">
+            <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ accommodation.id }}</td>
@@ -18,39 +27,63 @@
                 <td>{{ accommodation.description }}</td>
             </tr>
             <tr>
-                <th>Dateadded</th>
-                <td>{% if accommodation.dateAdded %}{{ accommodation.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <th>Added on</th>
+                <td>{% if accommodation.dateAdded %}
+                        {{ accommodation.dateAdded|date('jS F \\a\\t H:i:s', 'Europe/Sofia') }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
-                <th>Ownerid</th>
-                <td>{{ accommodation.ownerId }}</td>
+                <th>Owner</th>
+                <td>{{ accommodation.owner.fullName }}</td>
             </tr>
             <tr>
                 <th>Image</th>
-                <td>{{ accommodation.image }}</td>
+                <td><img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
+                         width="400" height="200" alt="image"></td>
             </tr>
             <tr>
-                <th>Viewcount</th>
+                <th>Views</th>
                 <td>{{ accommodation.viewCount }}</td>
             </tr>
             <tr>
-                <th>Likesnumber</th>
+                <th>Likes</th>
                 <td>{{ accommodation.likesNumber }}</td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </section>
+    <section class="actions">
+        <a href="{{ path('accommodation_add_like', {'id': accommodation.id}) }}"><i class="far fa-thumbs-up"></i></a>
 
-    <ul>
-        <li>
-            <a href="{{ path('my_accommodations') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('accommodation_edit', { 'id': accommodation.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+        <button id="btnComment" class="btn btn-info btn-xs">Add</button>
+        <div id="form"></div>
+
+        {#{% for comment in comments %}
+            <p>{{ comment.content }}</p>
+            <small>{{ comment.dateAdded|date("F jS \\a\\t g:ia", "Europe/Sofia") }}</small>
+            <a href="{{ path('user_message', {'id': comment.author.id, 'accommodationId': accommodation.id}) }}">
+                <small>{{ comment.author.fullName }}</small></a>
+            <hr />
+        {% endfor %}#}
+
+    </section>
+    <footer>
+        <div class="m-3 text-right">
+            <button class="btn btn-outline-warning btn-sm">
+                <a href="{{ path('blog_index') }}">Back to the list</a>
+            </button>
+            {% if app.getUser() and app.getUser().isAdmin() %}
+                <button class="btn btn-outline-warning btn-sm">
+                    <a href="{{ path('accommodation_edit', { 'id': accommodation.id }) }}">Edit</a>
+                </button>
+                <button class="btn btn-sm">
+                    {{ form_start(delete_form) }}
+                    <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+                    {{ form_end(delete_form) }}
+                </button>
+            {% endif %}
+        </div>
+    </footer>
+
 {% endblock %}
