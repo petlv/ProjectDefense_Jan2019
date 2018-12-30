@@ -20,19 +20,14 @@ class UserService
     /* @var EntityManager $em */
     protected $em;
 
-    /* @var Connection $queryBuilder */
-    protected $qBuilder;
-
     /**
      * OneLevel Constructor
      *
      * @param EntityManager $em
-     * @param Connection $conn
      */
-    public function __construct(EntityManager $em, Connection $conn)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->qBuilder = $conn->createQueryBuilder();
     }
 
     /**
@@ -59,7 +54,13 @@ class UserService
         return $userForm;
     }
 
-    public function findAndSetRole() {
+
+    /**
+     * @param string $typeUser
+     * @return Role
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function findAndSetRole($typeUser) {
 
         /** @var Role[]|null $roles */
         $roles = $this
@@ -68,23 +69,32 @@ class UserService
             ->findAll();
 
         if (empty($roles)) {
-            $this->qBuilder
-                ->insert('roles')
-                ->setValue('name', '?')
-                ->setParameter(0, 'ROLE_ADMIN')
-                ->setValue('name', '?')
-                ->setParameter(0, 'ROLE_USER')
-                ->setValue('name', '?')
-                ->setParameter(0, 'ROLE_OWNER')
-                ->setValue('name', '?')
-                ->setParameter(0, 'ROLE_TOURIST');
+            $conn = $this->em->getConnection();
+            $dbal = "INSERT INTO roles (name) values ('ROLE_ADMIN'), ('ROLE_OWNER'), ('ROLE_TOURIST')";
+            $stmt = $conn->prepare($dbal);
+            $stmt->execute();
         }
 
-        /** @var Role $role */
-        $role = $this
-            ->em
-            ->getRepository(Role::class)
-            ->findOneBy(['name' => 'ROLE_USER']);
+        $newRole = new Role();
+
+        if ('type_owner' === $typeUser) {
+
+            /** @var Role $newRole */
+            $newRole = $this
+                ->em
+                ->getRepository(Role::class)
+                ->findOneBy(['name' => 'ROLE_OWNER']);
+
+        } elseif ('type_tourist' === $typeUser) {
+
+            /** @var Role $newRole */
+            $newRole = $this
+                ->em
+                ->getRepository(Role::class)
+                ->findOneBy(['name' => 'ROLE_TOURIST']);
+        }
+
+        return $newRole;
     }
 
 }

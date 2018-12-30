@@ -36,6 +36,7 @@ class UserController extends Controller
      * Creates a new user entity.
      *
      * @Route("/register", name="user_register")
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function registerAction(Request $request)
     {
@@ -57,43 +58,18 @@ class UserController extends Controller
             $password = $this->get('security.password_encoder')
                 ->encodePassword($newUser, $newUser->getPassword());
 
-            /** @var Role $role */
-            $role = $this
-                ->getDoctrine()
-                ->getRepository(Role::class)
-                ->findOneBy(['name' => 'ROLE_USER']);
-
-            $newUser->addRole($role);
-
+            /** @var string $typeUser */
             $typeUser = $newUser->getUserType();
-            if ('type_owner' === $typeUser) {
-
-                /** @var Role $newRole */
-                $newRole = $this
-                    ->getDoctrine()
-                    ->getRepository(Role::class)
-                    ->findOneBy(['name' => 'ROLE_OWNER']);
-
-                $newUser->addRole($newRole);
-            } elseif ('type_tourist' === $typeUser) {
-
-                /** @var Role $newRole */
-                $newRole = $this
-                    ->getDoctrine()
-                    ->getRepository(Role::class)
-                    ->findOneBy(['name' => 'ROLE_TOURIST']);
-
-                $newUser->addRole($newRole);
-            }
-
-            $newUser->setPassword($password);
+            /** @var Role $newRole */
+            $newRole = $this->container->get('app.user_service')->findAndSetRole($typeUser);
+            $newUser
+                ->addRole($newRole)
+                ->setPassword($password);
 
             $em->persist($newUser);
             $em->flush();
 
             return $this->redirectToRoute('security_login');
-
-//            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
         }
 
         return $this->render('user/register.html.twig', array(
