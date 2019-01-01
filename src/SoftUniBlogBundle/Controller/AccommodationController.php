@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use SoftUniBlogBundle\Entity\Accommodation;
 use SoftUniBlogBundle\Entity\City;
+use SoftUniBlogBundle\Entity\Comment;
 use SoftUniBlogBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -83,6 +84,8 @@ class AccommodationController extends Controller
      *
      * @Route("/create", name="accommodation_create")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
     public function createAction(Request $request)
@@ -148,22 +151,25 @@ class AccommodationController extends Controller
      *
      * @Route("/{id}", name="accommodation_show")
      * @Method("GET")
+     * @param Request $request
      * @param Accommodation $accommodation
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      */
-    public function showAction(Accommodation $accommodation)
+    public function showAction(Request $request, Accommodation $accommodation)
     {
         $accommodation->addViewCount();
         $em = $this->getDoctrine()->getManager();
         $em->persist($accommodation);
         $em->flush();
 
+        $comments = $this->getDoctrine()->getRepository(Comment::class)
+            ->findBy(['accommodation' => $accommodation], ['dateAdded' => 'desc']);
+
         $deleteForm = $this->createDeleteForm($accommodation);
 
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $userId = $this->getUser()->getId();
-            /** @var User $user */
-            $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
+            $currentUser = $this->getUser();
             /** @var int $countMsg */
             $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
@@ -172,12 +178,14 @@ class AccommodationController extends Controller
                 'delete_form' => $deleteForm->createView(),
                 'user' => $currentUser,
                 'countMsg' => $countMsg,
+                'comments' => $comments,
             ));
         }
 
         return $this->render('accommodation/show.html.twig', array(
             'accommodation' => $accommodation,
             'delete_form' => $deleteForm->createView(),
+            'comments' => $comments
         ));
     }
 

@@ -23,23 +23,21 @@
                                         <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
                                              width="400" height="200" alt="Image"></a>
                                 </p>
-                                <small>
-                                    <div class="m-1">
-                                        <ul class="row list-unstyled justify-content-end">
-                                            <li class="mx-2 text-secondary">Owner: <span class="text-primary">
-                                                    {{ accommodation.owner.fullName }}</span></li>
-                                            <li class="mx-2 text-secondary">Views: <span class="text-primary">
-                                                {{ accommodation.viewCount }}</li>
-                                            <li class="mx-2 text-secondary">Likes: <span class="text-primary">
-                                                {{ accommodation.likesNumber }}</li>
-                                            <li class="mx-2">
-                                                <button class="btn btn-outline-info btn-sm">
-                                                    <a href="{{ path('accommodation_show', {'id': accommodation.id}) }}">
-                                                    Read more &raquo;</a></button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </small>
+                            </div>
+                            <div class="m-1 small">
+                                <ul class="row list-unstyled justify-content-end">
+                                    <li class="mx-2 text-secondary">Owner: <span class="text-primary">
+                                            {{ accommodation.owner.fullName }}</span></li>
+                                    <li class="mx-2 text-secondary">Views: <span class="text-primary">
+                                        {{ accommodation.viewCount }}</li>
+                                    <li class="mx-2 text-secondary">Likes: <span class="text-primary">
+                                        {{ accommodation.likesNumber }}</li>
+                                    <li class="mx-2">
+                                        <button class="btn btn-outline-info btn-sm">
+                                            <a href="{{ path('accommodation_show', {'id': accommodation.id}) }}">
+                                            Read more &raquo;</a></button>
+                                    </li>
+                                </ul>
                             </div>
                         </article>
                     </div>

@@ -10,63 +10,75 @@
     {% endfor %}
 
     <section class="article">
-        <h1>Accommodation Details</h1>
-
-        <table class="table">
-            <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ accommodation.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ accommodation.name }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ accommodation.description }}</td>
-            </tr>
-            <tr>
-                <th>Added on</th>
-                <td>{% if accommodation.dateAdded %}
-                        {{ accommodation.dateAdded|date('jS F \\a\\t H:i:s', 'Europe/Sofia') }}
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Owner</th>
-                <td>{{ accommodation.owner.fullName }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td><img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
-                         width="400" height="200" alt="image"></td>
-            </tr>
-            <tr>
-                <th>Views</th>
-                <td>{{ accommodation.viewCount }}</td>
-            </tr>
-            <tr>
-                <th>Likes</th>
-                <td>{{ accommodation.likesNumber }}</td>
-            </tr>
-            </tbody>
-        </table>
+        <header>
+            <h1 class="h4 m-3">Details for {{ accommodation.name }}</h1>
+            <div class="mx-4 likes-views">
+                <ul class="row list-unstyled">
+                    <li class="mx-2 text-secondary">Id: <span class="text-primary">
+                        {{ accommodation.id }}</li>
+                    <li class="mx-2 text-secondary">Views: <span class="text-primary">
+                        {{ accommodation.viewCount }}</li>
+                    <li class="mx-2 text-secondary">Likes: <span class="text-primary">
+                        {{ accommodation.likesNumber }}</li>
+                </ul>
+            </div>
+        </header>
+        <main class="row">
+            <table class="table col">
+                <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ accommodation.name }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ accommodation.description }}</td>
+                </tr>
+                <tr>
+                    <th>Added on</th>
+                    <td>{% if accommodation.dateAdded %}
+                            {{ accommodation.dateAdded|date('jS F \\a\\t H:i:s', 'Europe/Sofia') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Owner</th>
+                    <td>{{ accommodation.owner.fullName }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="col mx-5">
+                <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
+                     width="400" height="200" alt="image" />
+                <ul class="row list-unstyled my-3 mx-1">
+                    <li><span class="text-success">Give a like</span><a href="{{ path('accommodation_add_like',
+                            {'id': accommodation.id}) }}">
+                            <i class="far fa-thumbs-up fa-2x"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </main>
     </section>
-    <section class="actions">
-        <a href="{{ path('accommodation_add_like', {'id': accommodation.id}) }}"><i class="far fa-thumbs-up"></i></a>
-
-        <button id="btnComment" class="btn btn-info btn-xs">Add</button>
-        <div id="form"></div>
-
-        {#{% for comment in comments %}
-            <p>{{ comment.content }}</p>
-            <small>{{ comment.dateAdded|date("F jS \\a\\t g:ia", "Europe/Sofia") }}</small>
-            <a href="{{ path('user_message', {'id': comment.author.id, 'accommodationId': accommodation.id}) }}">
-                <small>{{ comment.author.fullName }}</small></a>
-            <hr />
-        {% endfor %}#}
-
+    <section class="comments col-6 mx-auto">
+        <div class="m-3">
+            <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                    data-target="#addComment">
+                Add comment
+            </button>
+        </div>
+        <div class="card card-body bg-dark text-light">
+            <h1 class="h5 card-title">Comments from users</h1>
+            <div class="card-text">
+                {% for comment in comments %}
+                    <p>{{ comment.content }}</p>
+                    <small>{{ comment.dateAdded|date("F jS \\a\\t g:ia", "Europe/Sofia") }}</small>
+                    {#<a href="{{ path('user_message', {'id': comment.author.id, 'accommodationId': accommodation.id}) }}">#}
+                        <small>{{ comment.author.fullName }}</small>
+                    {#</a>#}
+                    <hr />
+                {% endfor %}
+            </div>
+        </div>
     </section>
     <footer>
         <div class="m-3 text-right">
@@ -84,6 +96,32 @@
                 </button>
             {% endif %}
         </div>
+        <!-- Modal -->
+        <form method="POST" name="comment" action="{{ path('comment_new', {'id': accommodation.id}) }}" >
+            <div class="modal fade" id="addComment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Add a comment</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <textarea class="form-control" rows="6" id="comment_content"
+                                          name="comment[content]" placeholder="Place your comment here"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </footer>
 
 {% endblock %}

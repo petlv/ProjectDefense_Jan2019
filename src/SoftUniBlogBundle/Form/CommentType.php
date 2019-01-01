@@ -26,4 +26,13 @@ class CommentType extends AbstractType
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
+   /* public function getBlockPrefix()
+    {
+        return 'softuniblogbundle_comment';
+    }*/
+
+
 }

@@ -58,13 +58,9 @@ class HomeController extends Controller
      */
     public function testAction() {
 
-        $userId = $this->getUser()->getId();
 
-        $countMsg = $this->container->get('app.message_service')->countUnreadMessages($userId);
 
-        return new Response(
-            'Lucky number: '.$countMsg
-        );
+        return $this->render('home/test.html.twig');
 
     }
 }

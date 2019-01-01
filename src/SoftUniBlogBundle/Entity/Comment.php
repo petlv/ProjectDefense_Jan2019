@@ -128,7 +128,7 @@ class Comment
      * @param Accommodation|null $accommodation
      * @return Comment
      */
-    public function setArticle(Accommodation $accommodation = null)
+    public function setAccommodation(Accommodation $accommodation = null)
     {
         $this->accommodation = $accommodation;
         return $this;
