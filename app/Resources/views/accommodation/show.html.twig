@@ -63,7 +63,7 @@
         <div class="m-3">
             <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                     data-target="#addComment">
-                Add comment
+                Add a comment
             </button>
         </div>
         <div class="card card-body bg-dark text-light">
@@ -71,10 +71,12 @@
             <div class="card-text">
                 {% for comment in comments %}
                     <p>{{ comment.content }}</p>
-                    <small>{{ comment.dateAdded|date("F jS \\a\\t g:ia", "Europe/Sofia") }}</small>
-                    {#<a href="{{ path('user_message', {'id': comment.author.id, 'accommodationId': accommodation.id}) }}">#}
-                        <small>{{ comment.author.fullName }}</small>
-                    {#</a>#}
+                    <small>{{ comment.dateAdded|date('jS F \\a\\t H:i:s', 'Europe/Sofia') }},</small>
+                    <small>author: {{ comment.author.fullName }}</small>
+                    <button type="button" class="ml-1 btn btn-outline-primary btn-sm">
+                        <a href="{{ path('message_new', {'id': comment.author.id,
+                            'accommodationId': accommodation.id}) }}">Send a message</a>
+                    </button>
                     <hr />
                 {% endfor %}
             </div>
@@ -96,7 +98,7 @@
                 </button>
             {% endif %}
         </div>
-        <!-- Modal -->
+        <!-- Modal for a comment -->
         <form method="POST" name="comment" action="{{ path('comment_new', {'id': accommodation.id}) }}" >
             <div class="modal fade" id="addComment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
                  aria-hidden="true">
@@ -111,9 +113,11 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <textarea class="form-control" rows="6" id="comment_content"
-                                          name="comment[content]" placeholder="Place your comment here"></textarea>
+                                          name="comment[content]" placeholder="Place your comment here"
+                                required></textarea>
                             </div>
                         </div>
+                        <input type="hidden" name="token" value="{{ csrf_token('add-comment') }}" />
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>

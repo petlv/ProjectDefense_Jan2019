@@ -37,15 +37,16 @@ class HomeController extends Controller
         );
 
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $userId = $this->getUser()->getId();
+            $currentUser = $this->getUser();
 
-            /** @var User $user */
-            $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
             /** @var int $countMsg */
             $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
-            return $this->render('home/index.html.twig', ['pagination' => $pagination, 'user' => $currentUser,
-                'countMsg' => $countMsg]);
+            return $this->render('home/index.html.twig', [
+                'pagination' => $pagination,
+                'user' => $currentUser,
+                'countMsg' => $countMsg]
+            );
         }
 
         return $this->render('home/index.html.twig', ['pagination' => $pagination]);

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for msg in app.session.flashbag.get('alertMessage') %}
+        <div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    <h1 class="h5 mx-2 my-4">Send a message</h1>
+    <hr />
+
+    <form class="m-3 col-6" action="{{ path('message_new', {'id': user.id,
+        'accommodationId': id}) }}"
+          method="POST">
+        <div class="form-group row">
+            <label for="about" class="col-sm-2 col-form-label">About</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="about" placeholder="Subject"
+                       name="message[about]" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="content" class="col-sm-2 col-form-label">Content</label>
+            <div class="col-sm-8">
+                <textarea rows="6" class="form-control" id="content" placeholder="Write your message"
+                          name="message[content]" required></textarea>
+            </div>
+        </div>
+        {{  form_row(form._token) }}
+        <div class="form-group row">
+            <div class="col-sm-8">
+                <a class="btn btn-outline-secondary" href="{{ path('accommodation_show', {'id': id}) }}">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

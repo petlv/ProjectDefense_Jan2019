@@ -45,32 +45,47 @@ class CommentController extends Controller
      */
     public function createAction(Request $request, Accommodation $accommodation)
     {
+        $submittedToken = $request->request->get('token');
+
         $currentUser = $this->getUser();
         /** @var int $countMsg */
         $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+        $message = 'Csrf violation - you are not the user who you claim to be!';
 
-        $comment = new Comment();
-        $form = $this->createForm('SoftUniBlogBundle\Form\CommentType', $comment);
-        $form->handleRequest($request);
+        if ($this->isCsrfTokenValid('add-comment', $submittedToken)) {
 
-        $comment
-            ->setAuthor($currentUser)
-            ->setAccommodation($accommodation);
+            $comment = new Comment();
+            $form = $this->createForm('SoftUniBlogBundle\Form\CommentType', $comment);
+            $form->handleRequest($request);
 
-        $currentUser->addComment($comment);
-        $accommodation->addComment($comment);
+            $message = 'Form is not submitted correctly. Fill it again!';
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($comment);
-        $em->persist($currentUser);
-        $em->persist($accommodation);
-        $em->flush();
+            if ($form->isSubmitted()) {
+
+                $comment
+                    ->setAuthor($currentUser)
+                    ->setAccommodation($accommodation);
+
+                $currentUser->addComment($comment);
+                $accommodation->addComment($comment);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->persist($currentUser);
+                $em->persist($accommodation);
+                $em->flush();
+                $message = 'Comment added successfully!';
+            }
+        }
+
+        $this->addFlash('message', $message);
 
         return $this->redirectToRoute('accommodation_show', array(
             'id' => $accommodation->getId(),
             'user' => $currentUser,
             'countMsg' => $countMsg,
-            ));
+            'message' => $message,
+        ));
 
         /*return $this->render('comment/new.html.twig', array(
             'comment' => $comment,

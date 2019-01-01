@@ -16,10 +16,8 @@ class MessageType extends AbstractType
     {
         $builder
             ->add('about', TextType::class)
-            ->add('content', TextType::class);
-    }
-
-    /**
+            ->add('content', TextType::class);;
+    }/**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -28,4 +26,14 @@ class MessageType extends AbstractType
             'data_class' => 'SoftUniBlogBundle\Entity\Message'
         ));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+   /* public function getBlockPrefix()
+    {
+        return 'softuniblogbundle_message';
+    }*/
+
+
 }
