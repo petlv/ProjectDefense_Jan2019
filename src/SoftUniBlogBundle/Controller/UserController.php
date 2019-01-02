@@ -8,6 +8,7 @@ use SoftUniBlogBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use SoftUniBlogBundle\Form\UserType;
 
 /**
  * User controller.
@@ -41,7 +42,7 @@ class UserController extends Controller
     public function registerAction(Request $request)
     {
         $newUser = new User();
-        $form = $this->createForm('SoftUniBlogBundle\Form\UserType', $newUser);
+        $form = $this->createForm(UserType::class, $newUser);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -51,7 +52,7 @@ class UserController extends Controller
             $userForm = $this->container->get('app.user_service')->checkForDuplicateUser($emailForm);
 
             if (null !== $userForm) {
-                $this->addFlash('info', "Username with email " . $emailForm . " is already taken!");
+                $this->addFlash('info', 'Username with email ' . $emailForm . ' is already taken!');
                 return $this->render('user/register.html.twig', ['form' => $form->createView()]);
             }
 
@@ -82,16 +83,13 @@ class UserController extends Controller
      * Finds and displays a user entity.
      *
      * @Route("/{id}", name="user_show")
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(User $user)
     {
-        /** @var Message[] $unreadMessages */
-        $unreadMessages = $this
-            ->getDoctrine()
-            ->getRepository(Message::class)
-            ->findBy(['recipient' => $user, 'isReaded' => false]);
-
-        $countMsg = count($unreadMessages);
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
         $deleteForm = $this->createDeleteForm($user);
 

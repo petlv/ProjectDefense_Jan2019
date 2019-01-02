@@ -18,20 +18,42 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component
  */
 class MessageController extends Controller
 {
+
+    const PAGINATION_LIMIT = 5;
+
     /**
      * Lists all message entities.
      *
-     * @Route("/", name="message_index")
+     * @Route("/mailbox", name="mailbox")
      * @Method("GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function mailboxAction(Request $request)
     {
+        $currentUser = $this->getUser();
+
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
         $em = $this->getDoctrine()->getManager();
+        $messages = $em->getRepository('SoftUniBlogBundle:Message')->findBy(
+            array('recipient' => $currentUser),
+            array('dateAdded' => 'DESC')
+        );
 
-        $messages = $em->getRepository('SoftUniBlogBundle:Message')->findAll();
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $messages, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            self::PAGINATION_LIMIT/*limit per page*/
+        );
 
-        return $this->render('message/index.html.twig', array(
+        return $this->render('message/mailbox.html.twig', array(
             'messages' => $messages,
+            'pagination' => $pagination,
+            'user' => $currentUser,
+            'countMsg' => $countMsg
         ));
     }
 
@@ -100,14 +122,23 @@ class MessageController extends Controller
      *
      * @Route("/{id}", name="message_show")
      * @Method("GET")
+     * @param Message $message
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Message $message)
     {
+        $currentUser = $this->getUser();
+
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
         $deleteForm = $this->createDeleteForm($message);
 
         return $this->render('message/show.html.twig', array(
             'message' => $message,
             'delete_form' => $deleteForm->createView(),
+            'user' => $currentUser,
+            'countMsg' => $countMsg
         ));
     }
 

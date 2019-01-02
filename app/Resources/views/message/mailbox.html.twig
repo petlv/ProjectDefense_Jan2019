@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for msg in app.session.flashbag.get('alertMessage') %}
+        <div id="msg" class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    <section class="mailbox">
+        <header>
+            <h1 class="h4 m-3">{{ user.fullName }}'s mailbox</h1>
+        </header>
+        <main class="row">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Read/Unread</th>
+                        <th>Sender</th>
+                        <th>About</th>
+                        <th>Sent date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in pagination %}
+                        <tr>
+                            <td><a href="{{ path('message_show', { 'id': message.id }) }}">
+                                    {% if not message.isReaded %}
+                                        <span class="text-danger">Unread</span>
+                                    {% else %}
+                                        <span class="text-success">Read</span>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>{{ message.sender.fullName }}</td>
+                            <td>{{ message.about }}</td>
+                            <td>
+                                {% if message.dateAdded %}
+                                    {{ message.dateAdded|date('jS F \\a\\t H:i:s', 'Europe/Sofia') }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ path('message_show', { 'id': message.id }) }}">open</a>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </section>
+
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+{% endblock %}

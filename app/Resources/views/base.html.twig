@@ -19,7 +19,7 @@
 
     {% block javascripts %}
         <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
-        {#<script src="{{ asset('js/bootstrap.min.js') }}"></script>#}
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 
         <script>
@@ -62,7 +62,8 @@
                         {% endif %}
                         <a class="nav-item nav-link" href="{{ path('my_accommodations') }}">My Accommodations</a>
                         <a class="nav-item nav-link" href="{{ path('accommodation_create') }}">Create Accommodation</a>
-                        <a class="nav-item nav-link" href="{{ path('user_show', { 'id': user.id }) }}">My Profile
+                        <a class="nav-item nav-link" href="{{ path('user_show', { 'id': user.id }) }}">My Profile</a>
+                        <a class="nav-item nav-link" href="{{ path('mailbox') }}">Mailbox
                             <span class="fas fa-envelope fa-1x">({{ countMsg }})</span></a>
                         <a class="nav-item nav-link" href="{{ path('security_logout') }}">Logout</a>
                     {% else %}
