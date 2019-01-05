@@ -70,10 +70,10 @@ circle.tooltipText = "{title}";
 imageSeriesTemplate.propertyFields.latitude = "latitude";
 imageSeriesTemplate.propertyFields.longitude = "longitude";
 imageSeriesTemplate.propertyFields.title = "title";
-imageSeriesTemplate.propertyFields.ur = "url";
+imageSeriesTemplate.propertyFields.url = "url";
 
 // Add data for the three cities
-/*imageSeries.data = [
+imageSeries.data = [
 		{
 			"latitude": 42.697708,
 			"longitude": 23.321867,
@@ -87,13 +87,21 @@ imageSeriesTemplate.propertyFields.ur = "url";
 			"latitude": 42.497681,
 			"longitude": 27.470030,
 			"title": "Бургас"
-		}];*/
+		}, {
+            "latitude": 43.216640,
+            "longitude": 27.911810,
+            "title": "Варна"
+        }, {
+            "latitude": 43.078560,
+            "longitude": 25.627160,
+            "title": "Велико Търново"
+        }];
 
-imageSeries.mapImages.template.propertyFields.latitude = "latitude";
+/*imageSeries.mapImages.template.propertyFields.latitude = "latitude";
 imageSeries.mapImages.template.propertyFields.longitude = "longitude";
 imageSeries.mapImages.template.propertyFields.title = "title";
 imageSeries.mapImages.template.propertyFields.url = "url";
 
-imageSeries.dataSource = "towns-test.json";
+imageSeries.dataSource = "towns-test.json";*/
 
 

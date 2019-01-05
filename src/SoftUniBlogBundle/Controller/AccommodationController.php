@@ -23,34 +23,36 @@ use SoftUniBlogBundle\Form\AccommodationType;
  */
 class AccommodationController extends Controller
 {
+    const PAGINATION_LIMIT = 2;
+
     /**
      * Lists all accommodation entities.
      *
-     * @Route("/", name="list_accommodations")
+     * @Route("/all", name="list_accommodations")
      * @Method("GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function allIndexAction()
+    public function allIndexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
         $accommodations = $em->getRepository('SoftUniBlogBundle:Accommodation')->findAll();
 
-        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $userId = $this->getUser()->getId();
-            /** @var User $user */
-            $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
-            /** @var int $countMsg */
-            $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
-            return $this->render('accommodation/index.html.twig', array(
-                'accommodations' => $accommodations,
-                'user' => $currentUser,
-                'countMsg' => $countMsg
-            ));
-        }
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $accommodations, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            self::PAGINATION_LIMIT/*limit per page*/
+        );
 
         return $this->render('accommodation/index.html.twig', array(
             'accommodations' => $accommodations,
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg,
+            'pagination' => $pagination,
         ));
     }
 
@@ -60,23 +62,31 @@ class AccommodationController extends Controller
      * @Route("/mylists", name="my_accommodations")
      * @Method("GET")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @Security("is_granted('ROLE_OWNER')")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function myIndexAction()
+    public function myIndexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         $accommodations = $em->getRepository('SoftUniBlogBundle:Accommodation')->findBy(['owner' => $this->getUser()]);
 
-        $userId = $this->getUser()->getId();
-        /** @var User $user */
-        $currentUser = $this->container->get('app.user_service')->getCurrentUserFromDb($userId);
         /** @var int $countMsg */
         $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $accommodations, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            self::PAGINATION_LIMIT/*limit per page*/
+        );
+
         return $this->render('accommodation/index.html.twig', array(
             'accommodations' => $accommodations,
-            'user' => $currentUser,
-            'countMsg' => $countMsg
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg,
+            'pagination' => $pagination,
         ));
     }
 
@@ -85,6 +95,7 @@ class AccommodationController extends Controller
      *
      * @Route("/create", name="accommodation_create")
      * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_OWNER')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception

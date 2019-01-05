@@ -60,8 +60,13 @@
                         {% if is_granted('ROLE_ADMIN')  %}
                             <a class="nav-item nav-link" href="{{ path('dashboard') }}">Admin Panel</a>
                         {% endif %}
-                        <a class="nav-item nav-link" href="{{ path('my_accommodations') }}">My Accommodations</a>
-                        <a class="nav-item nav-link" href="{{ path('accommodation_create') }}">Create Accommodation</a>
+                        {% if is_granted('ROLE_OWNER')  %}
+                            <a class="nav-item nav-link" href="{{ path('my_accommodations') }}">My Accommodations</a>
+                            <a class="nav-item nav-link" href="{{ path('accommodation_create') }}">Create Accommodation</a>
+                        {% endif %}
+                        {% if is_granted('ROLE_TOURIST')  %}
+                            <a class="nav-item nav-link" href="{{ path('list_accommodations') }}">All Accommodations</a>
+                        {% endif %}
                         <a class="nav-item nav-link" href="{{ path('user_show', { 'id': user.id }) }}">My Profile</a>
                         <a class="nav-item nav-link" href="{{ path('mailbox') }}">Mailbox
                             <span class="fas fa-envelope fa-1x">({{ countMsg }})</span></a>

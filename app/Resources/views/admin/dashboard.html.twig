@@ -1,91 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block main %}
-            <div class="card col m-3">
-                <div class="card-body">
-                    <h5 class="card-title">List users</h5>
-                    <div class="card-text">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Email</th>
-                                <th>Full Name</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for user in allUsers %}
-                                <tr>
-                                    <td><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
-                                    <td>{{ user.email }}</td>
-                                    <td>{{ user.fullName }}</td>
-                                    <td>
-                                        <ul>
-                                            <li>
-                                                <a href="{{ path('user_show', { 'id': user.id }) }}">show</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('user_edit', { 'id': user.id }) }}">edit</a>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+{% block body %}
+    {% for msg in app.session.flashbag.get('alertMessage') %}
+        <div id="msg" class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+            {{ msg }}
+        </div>
+    {% endfor %}
 
-                        <ul>
-                            <li>
-                                <a href="{{ path('user_register') }}">Create a new user</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="card col m-3">
-                <div class="card-body">
-                    <h5 class="card-title">List cities</h5>
-                    <div class="card-text">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for city in allCities %}
-                                <tr>
-                                    <td><a href="{{ path('city_show', { 'id': city.id }) }}">{{ city.id }}</a></td>
-                                    <td>{{ city.name }}</td>
-                                    <td>{{ city.latitude }}</td>
-                                    <td>{{ city.longitude }}</td>
-                                    <td>
-                                        <ul>
-                                            <li>
-                                                <a href="{{ path('city_show', { 'id': city.id }) }}">show</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('city_edit', { 'id': city.id }) }}">edit</a>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+    <div class="row justify-content-center">
+        <div class="card card-body col-5 m-3">
+            <h5 class="card-title">List users</h5>
+            <div class="card-text">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in allUsers %}
+                        <tr>
+                            <td><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.fullName }}</td>
+                            <td>
+                                <ul>
+                                    <li>
+                                        <a href="{{ path('user_show', { 'id': user.id }) }}">show</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('user_edit', { 'id': user.id }) }}">edit</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
-                        <ul>
-                            <li>
-                                <a href="{{ path('city_new') }}">Create a new city</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <ul>
+                    <li class="text-center list-unstyled">
+                        <a class="btn p-1" href="{{ path('user_register') }}">
+                            <button class="btn btn-sm btn-outline-primary">Register a new user</button>
+                        </a>
+                    </li>
+                </ul>
             </div>
+        </div>
+
+        <div class="card card-body col-6 m-3">
+            <h5 class="card-title">List cities</h5>
+            <div class="card-text">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for city in allCities %}
+                        <tr>
+                            <td><a href="{{ path('city_show', { 'id': city.id }) }}">{{ city.id }}</a></td>
+                            <td>{{ city.name }}</td>
+                            <td>{{ city.latitude }}</td>
+                            <td>{{ city.longitude }}</td>
+                            <td>
+                                <ul>
+                                    <li>
+                                        <a href="{{ path('city_show', { 'id': city.id }) }}">show</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('city_edit', { 'id': city.id }) }}">edit</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <ul>
+                    <li class="text-center list-unstyled">
+                        <a class="btn p-1" href="{{ path('city_new') }}">
+                            <button class="btn btn-sm btn-outline-primary">Submit a new city</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

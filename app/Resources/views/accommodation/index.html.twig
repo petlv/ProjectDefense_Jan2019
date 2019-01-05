@@ -1,51 +1,54 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Accommodations list</h1>
+    <div class="container body-content">
+        <section>
+            <h1 class="card-title h3 text-black-50 m-3">
+                {% if is_granted('ROLE_OWNER')  %}
+                    My accommodations
+                {% else %}
+                    All accommodations
+                {% endif %}
+            </h1>
+            <div class="row">
+                {% for accommodation in pagination %}
+                    <div class="card col m-3">
+                        <article class="card-body">
+                            <header>
+                                <h1 class="card-title h4">{{ accommodation.name }}</h1>
+                            </header>
+                            <div class="card-text">
+                                <p>{{ accommodation.summary }}</p>
+                                <p>
+                                    <a href="{{ path('accommodation_show', {'id' : accommodation.id}) }}">
+                                        <img src="{{ asset('uploads/images/accommodations/' ~ accommodation.image) }}"
+                                             width="400" height="200" alt="Image"></a>
+                                </p>
+                            </div>
+                            <div class="m-1 small">
+                                <ul class="row list-unstyled justify-content-end">
+                                    <li class="mx-2 text-secondary">Owner: <span class="text-primary">
+                                                {{ accommodation.owner.fullName }}</span></li>
+                                    <li class="mx-2 text-secondary">Views: <span class="text-primary">
+                                        {{ accommodation.viewCount }}</li>
+                                    <li class="mx-2 text-secondary">Likes: <span class="text-primary">
+                                        {{ accommodation.likesNumber }}</li>
+                                    <li class="mx-2">
+                                        <button class="btn btn-outline-info btn-sm">
+                                            <a href="{{ path('accommodation_show', {'id': accommodation.id}) }}">
+                                                Read more &raquo;</a></button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Dateadded</th>
-                <th>Ownerid</th>
-                <th>Image</th>
-                <th>Viewcount</th>
-                <th>Likesnumber</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for accommodation in accommodations %}
-            <tr>
-                <td><a href="{{ path('accommodation_show', { 'id': accommodation.id }) }}">{{ accommodation.id }}</a></td>
-                <td>{{ accommodation.name }}</td>
-                <td>{{ accommodation.description }}</td>
-                <td>{% if accommodation.dateAdded %}{{ accommodation.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ accommodation.ownerId }}</td>
-                <td>{{ accommodation.image }}</td>
-                <td>{{ accommodation.viewCount }}</td>
-                <td>{{ accommodation.likesNumber }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('accommodation_show', { 'id': accommodation.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('accommodation_edit', { 'id': accommodation.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('accommodation_create') }}">Create a new accommodation</a>
-        </li>
-    </ul>
+        {# display navigation #}
+        <div class="navigation text-center">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
 {% endblock %}

@@ -1,38 +1,40 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="h5 mx-2 my-4">Edit a city</h1>
+
+    <h1 class="h5 mx-2 my-4">Delete a city entity</h1>
     <hr />
 
-    <form class="m-3 col-6" action="{{ path('city_edit', {'id': city.id}) }}" method="POST">
+    <form class="m-3 col-6" action="{{ path('city_delete', {'id': city.id}) }}" method="POST">
         <div class="form-group row">
             <label for="cityName" class="col-sm-2 col-form-label">Name</label>
             <div class="col-sm-8">
                 <input type="text" class="form-control" id="cityName" placeholder="City name"
-                       name="city[name]" value="{{ city.name }}" required>
+                       name="city[name]" value="{{ city.name }}" disabled required>
             </div>
         </div>
         <div class="form-group row">
             <label for="latitude" class="col-sm-2 col-form-label">Latitude</label>
             <div class="col-sm-8">
                 <input type="number" class="form-control" id="latitude" placeholder="Latitude as a decimal number"
-                       name="city[latitude]" step="0.000001" value="{{ city.latitude }}" required>
+                       name="city[latitude]" step="0.000001" value="{{ city.latitude }}" disabled required>
             </div>
         </div>
         <div class="form-group row">
             <label for="longitude" class="col-sm-2 col-form-label">Longitude</label>
             <div class="col-sm-8">
                 <input type="number" class="form-control" id="longitude" placeholder="Longitude as a decimal number"
-                       name="city[longitude]" step="0.000001" value="{{ city.longitude }}" required>
+                       name="city[longitude]" step="0.000001" value="{{ city.longitude }}" disabled required>
             </div>
         </div>
         {{  form_row(form._token) }}
         <div class="form-group row">
             <div class="col-sm-8">
-                <a class="btn btn-outline-secondary" href="{{ path('dashboard') }}">Cancel</a>
-                <button type="submit" class="btn btn-primary">Edit</button>
+                <a class="btn btn-outline-secondary" href="{{ path('city_show', {'id': city.id}) }}">Cancel</a>
+                <button type="submit" class="btn btn-danger">Delete</button>
             </div>
         </div>
     </form>
 
 {% endblock %}
+

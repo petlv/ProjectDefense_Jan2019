@@ -6,6 +6,7 @@ use SoftUniBlogBundle\Entity\City;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use SoftUniBlogBundle\Form\CityType;
 
 /**
  * City controller.
@@ -22,8 +23,11 @@ class CityController extends Controller
      */
     public function newAction(Request $request)
     {
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
         $city = new City();
-        $form = $this->createForm('SoftUniBlogBundle\Form\CityType', $city);
+        $form = $this->createForm(CityType::class, $city);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -31,12 +35,20 @@ class CityController extends Controller
             $em->persist($city);
             $em->flush();
 
-            return $this->redirectToRoute('city_show', array('id' => $city->getId()));
+            $this->addFlash('alertMessage', 'City successfully added!');
+
+            return $this->redirectToRoute('city_show', array(
+                'id' => $city->getId(),
+                'user' => $this->getUser(),
+                'countMsg' => $countMsg
+            ));
         }
 
         return $this->render('city/new.html.twig', array(
             'city' => $city,
             'form' => $form->createView(),
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg
         ));
     }
 
@@ -45,14 +57,18 @@ class CityController extends Controller
      *
      * @Route("/{id}", name="city_show")
      * @Method("GET")
+     * @param City $city
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(City $city)
     {
-        $deleteForm = $this->createDeleteForm($city);
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
         return $this->render('city/show.html.twig', array(
             'city' => $city,
-            'delete_form' => $deleteForm->createView(),
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg
         ));
     }
 
@@ -61,59 +77,71 @@ class CityController extends Controller
      *
      * @Route("/{id}/edit", name="city_edit")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param City $city
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, City $city)
     {
-        $deleteForm = $this->createDeleteForm($city);
-        $editForm = $this->createForm('SoftUniBlogBundle\Form\CityType', $city);
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+        $editForm = $this->createForm(CityType::class, $city);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('alertMessage', 'City successfully edited!');
 
-            return $this->redirectToRoute('city_edit', array('id' => $city->getId()));
+            return $this->redirectToRoute('city_show', array(
+                'id' => $city->getId(),
+                'user' => $this->getUser(),
+                'countMsg' => $countMsg
+            ));
         }
 
         return $this->render('city/edit.html.twig', array(
             'city' => $city,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'form' => $editForm->createView(),
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg
         ));
     }
 
     /**
      * Deletes a city entity.
      *
-     * @Route("/{id}", name="city_delete")
+     * @Route("/{id}/delete", name="city_delete")
      * @Method("DELETE")
+     * @param Request $request
+     * @param City $city
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function deleteAction(Request $request, City $city)
     {
-        $form = $this->createDeleteForm($city);
-        $form->handleRequest($request);
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $deleteForm = $this->createForm(CityType::class, $city);
+        $deleteForm->handleRequest($request);
+
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($city);
             $em->flush();
+            $this->addFlash('alertMessage', 'City successfully deleted!');
+
+            return $this->redirectToRoute('dashboard', array(
+                'user' => $this->getUser(),
+                'countMsg' => $countMsg
+            ));
         }
 
-        return $this->redirectToRoute('dashboard');
-    }
-
-    /**
-     * Creates a form to delete a city entity.
-     *
-     * @param City $city The city entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(City $city)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('city_delete', array('id' => $city->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
+        return $this->render('city/delete.html.twig', array(
+            'city' => $city,
+            'form' => $deleteForm->createView(),
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg
+        ));
     }
 }

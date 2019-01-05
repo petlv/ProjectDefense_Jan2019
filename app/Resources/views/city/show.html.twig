@@ -1,40 +1,53 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    {% for msg in app.session.flashbag.get('alertMessage') %}
+        <div id="msg" class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
+            {{ msg }}
+        </div>
+    {% endfor %}
+
     <h1>City</h1>
 
-    <table>
+    <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ city.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ city.name }}</td>
-            </tr>
-            <tr>
-                <th>Latitude</th>
-                <td>{{ city.latitude }}</td>
-            </tr>
-            <tr>
-                <th>Longitude</th>
-                <td>{{ city.longitude }}</td>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <td>{{ city.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ city.name }}</td>
+        </tr>
+        <tr>
+            <th>Latitude</th>
+            <td>{{ city.latitude }}</td>
+        </tr>
+        <tr>
+            <th>Longitude</th>
+            <td>{{ city.longitude }}</td>
+        </tr>
         </tbody>
     </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('dashboard') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('city_edit', { 'id': city.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="m-3 text-right">
+        <a class="text-decoration-none" href="{{ path('dashboard') }}">
+            <button class="btn btn-outline-warning text-primary btn-sm">
+                Back to the list
+            </button>
+        </a>
+        <a class="text-decoration-none" href="{{ path('city_edit', { 'id': city.id }) }}">
+            <button class="btn btn-outline-warning text-primary btn-sm">
+                Edit
+            </button>
+        </a>
+        <a class="text-decoration-none" href="{{ path('city_delete', { 'id': city.id }) }}">
+            <button class="btn btn-danger btn-sm">
+                Delete
+            </button>
+        </a>
+    </div>
+
 {% endblock %}
