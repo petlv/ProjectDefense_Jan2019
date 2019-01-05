@@ -37,6 +37,8 @@ class UserController extends Controller
      * Creates a new user entity.
      *
      * @Route("/register", name="user_register")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\DBAL\DBALException
      */
     public function registerAction(Request $request)

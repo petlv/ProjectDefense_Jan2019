@@ -42,9 +42,9 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <button class="btn btn-outline-warning btn-sm">
-                                    <a href="{{ path('message_show', { 'id': message.id }) }}">open</a>
-                                </button>
+                                <a href="{{ path('message_show', { 'id': message.id }) }}">
+                                    <button class="btn btn-outline-warning btn-sm text-secondary">open</button>
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use SoftUniBlogBundle\Form\AccommodationType;
 
 /**
  * Accommodation controller.
@@ -91,7 +92,7 @@ class AccommodationController extends Controller
     public function createAction(Request $request)
     {
         $accommodation = new Accommodation();
-        $form = $this->createForm('SoftUniBlogBundle\Form\AccommodationType', $accommodation);
+        $form = $this->createForm(AccommodationType::class, $accommodation);
         $form->handleRequest($request);
 
         $userId = $this->getUser()->getId();
@@ -198,15 +199,21 @@ class AccommodationController extends Controller
     public function addLike(Accommodation $accommodation) {
 
         $currentUser = $this->getUser();
-        $currentUser->addLike($accommodation);
+        try {
+            $currentUser->addLike($accommodation);
 
-        $accommodation->addLike();
-        $id = $accommodation->getId();
+            $accommodation->addLike();
+            $id = $accommodation->getId();
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($accommodation);
-        $em->persist($currentUser);
-        $em->flush();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($accommodation);
+            $em->persist($currentUser);
+            $em->flush();
+            $this->addFlash('message', 'You successfully gave a like!');
+        } catch (\Exception $ex)
+        {
+            $this->addFlash('message', 'You could not like a property more than once!');
+        }
 
         return $this->redirectToRoute('accommodation_show', ['id' => $id]);
     }

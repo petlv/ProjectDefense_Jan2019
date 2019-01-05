@@ -91,7 +91,7 @@ class Accommodation
     private $likesNumber;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|User[]
      *
      * @ORM\ManyToMany(targetEntity="SoftUniBlogBundle\Entity\User", mappedBy="given_likes")
      */

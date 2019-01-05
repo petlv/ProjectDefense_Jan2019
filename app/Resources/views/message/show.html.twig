@@ -1,44 +1,40 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Message</h1>
+    <h1 class="h4 m-3">Subject of message: {{ message.about }}</h1>
+    <div class="mx-4 likes-views">
+        <ul class="row list-unstyled">
+            <li class="mx-2 text-secondary">Id: <span class="text-primary">
+                {{ message.id }}</li>
+            <li class="mx-2 text-secondary">Sender: <span class="text-primary">
+                {{ message.sender.fullName }}</li>
+            <li class="mx-2 text-secondary">Time sent: <span class="text-primary">
+                {% if message.dateAdded %}
+                    {{ message.dateAdded|date('jS F \\a\\t H:i:s', 'Europe/Sofia') }}
+                {% endif %}</li>
+        </ul>
+    </div>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ message.id }}</td>
-            </tr>
-            <tr>
-                <th>About</th>
-                <td>{{ message.about }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ message.content }}</td>
-            </tr>
-            <tr>
-                <th>Dateadded</th>
-                <td>{% if message.dateAdded %}{{ message.dateAdded|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Isreaded</th>
-                <td>{% if message.isReaded %}Yes{% else %}No{% endif %}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-6">
+            <p class="card-header font-weight-bold">Content:</p>
+            <p class="card-body">{{ message.content }}</p>
+        </div>
+    </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('mailbox') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('message_edit', { 'id': message.id }) }}">Edit</a>
-        </li>
-        <li>
+
+    <div class="m-3 text-right">
+        <a class="btn p-1" href="{{ path('message_reply', {'userId': message.sender.id, 'messageId': message.id}) }}">
+            <button class="btn btn-sm btn-primary text-light">Reply</button>
+        </a>
+        <a class="btn p-1" href="{{ path('mailbox') }}">
+            <button class="btn btn-outline-warning btn-sm text-secondary">Back to mail list</button>
+        </a>
+        <button class="btn btn-sm">
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+            <input class="btn btn-danger btn-sm" type="submit" value="Delete">
             {{ form_end(delete_form) }}
-        </li>
-    </ul>
+        </button>
+    </div>
+
 {% endblock %}

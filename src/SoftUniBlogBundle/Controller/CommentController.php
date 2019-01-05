@@ -100,6 +100,8 @@ class CommentController extends Controller
      *
      * @Route("/{id}", name="comment_show")
      * @Method("GET")
+     * @param Comment $comment
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Comment $comment)
     {
@@ -116,6 +118,9 @@ class CommentController extends Controller
      *
      * @Route("/{id}/edit", name="comment_edit")
      * @Method({"GET", "POST"})
+     * @param Request $request
+     * @param Comment $comment
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, Comment $comment)
     {

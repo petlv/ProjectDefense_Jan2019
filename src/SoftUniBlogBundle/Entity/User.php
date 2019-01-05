@@ -94,7 +94,7 @@ class User implements UserInterface
     private $receive_messages;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|Accommodation[]
      *
      * @ORM\ManyToMany(targetEntity="SoftUniBlogBundle\Entity\Accommodation", inversedBy="likesUsers")
      * @ORM\JoinTable(name="users_likes",
@@ -382,7 +382,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|Accommodation[]
      */
     public function getGivenLikes()
     {

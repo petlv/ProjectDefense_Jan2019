@@ -8,7 +8,8 @@ use SoftUniBlogBundle\Entity\User;
 use SoftUniBlogBundle\Form\MessageType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Message controller.
@@ -103,7 +104,6 @@ class MessageController extends Controller
                 'id' => $accommodationId,
                 'user' => $recipient,
                 'countMsg' => $countMsg,
-                'alertMessage' => $alertMessage,
             ));
         }
 
@@ -113,8 +113,54 @@ class MessageController extends Controller
             'id' => $accommodationId,
             'user' => $recipient,
             'countMsg' => $countMsg,
-            'alertMessage' => $alertMessage,
         ));
+    }
+
+    /**
+     * @Route("/reply/user/{userId}/message/{messageId}", name="message_reply")
+     * @param Request $request
+     * @param $userId
+     * @param $messageId
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function replyAction(Request $request, $userId, $messageId)
+    {
+        $message = $this->getDoctrine()->getRepository(Message::class)->find($messageId);
+
+        $sendMessage = new Message();
+        $form = $this->createForm(MessageType::class, $sendMessage);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sendMessage
+                ->setSender($this->getUser())
+                ->setRecipient($message->getSender())
+                ->setIsReaded(false);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($sendMessage);
+            $em->flush();
+
+            $this->addFlash('alertMessage', 'Message sent successfully!');
+            /** @var int $countMsg */
+            $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+            return $this->redirectToRoute('mailbox', array(
+                'user' => $this->getUser(),
+                'countMsg' => $countMsg,
+            ));
+        }
+
+        /** @var int $countMsg */
+        $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
+
+        return $this->render('message/reply.html.twig', [
+            'message' => $message,
+            'form' => $form->createView(),
+            'user' => $this->getUser(),
+            'countMsg' => $countMsg
+        ]);
     }
 
     /**
@@ -127,7 +173,10 @@ class MessageController extends Controller
      */
     public function showAction(Message $message)
     {
-        $currentUser = $this->getUser();
+        $message->setIsReaded(true);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($message);
+        $em->flush();
 
         /** @var int $countMsg */
         $countMsg = $this->container->get('app.message_service')->countUnreadMessages();
@@ -137,7 +186,7 @@ class MessageController extends Controller
         return $this->render('message/show.html.twig', array(
             'message' => $message,
             'delete_form' => $deleteForm->createView(),
-            'user' => $currentUser,
+            'user' => $this->getUser(),
             'countMsg' => $countMsg
         ));
     }
